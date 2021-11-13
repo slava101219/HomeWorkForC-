@@ -10,16 +10,13 @@ namespace ConsoleAppForCSLight
     {
         static void Main(string[] args)
         {
-            byte strange;
-            int helthHero;
-            uint helthBoss;
-            string heroName;
-            char symbolLeague;
-            bool opportunityToAttack;
-            double coeffAttack;
-            float coeffDefence;
-            ulong countUsers;
-            ushort countClans;
+            int sizeForSeries = 3;
+            int numberOfPictures = 52;
+            int unnecessaryPictures = 52 % 3;
+            int numberOfFullSeries = (52 - unnecessaryPictures) / 3;
+            Console.WriteLine(unnecessaryPictures);
+            Console.WriteLine(numberOfFullSeries);
         }
+        
     }
 }
