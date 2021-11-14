@@ -10,20 +10,13 @@ namespace ConsoleAppForCSLight
     {
         static void Main(string[] args)
         {
-            int finalGold;
-            int myGold;
-            int crystalsAvailableForPurchase;
-            int myCrystals;
-            int priceCrystal = 16;
-            Console.WriteLine("Приветствую в нашем магазине. Хотите купить кристаллы? Отлично, сегодня всего по " + priceCrystal + 
-                "! Сколько золота вы готовы потратить?");
-            myGold = Convert.ToInt32(Console.ReadLine());              
-            crystalsAvailableForPurchase = myGold / priceCrystal;
-            Console.WriteLine("За свои " + myGold + " золота, вы можете купить " + crystalsAvailableForPurchase +
-            " кристалла. Сколько же кристалов вам требуется?");
-            myCrystals = Convert.ToInt32(Console.ReadLine());
-            finalGold = myGold - (priceCrystal * myCrystals);
-            Console.WriteLine("Отлично! Теперь у вас " + myCrystals + " кристалов. У вас осталось " + finalGold + " золота.");
+            int grannyCount, hour, minute;
+            int waitTime = 10;
+            Console.WriteLine("введите кол-во старушек");
+            grannyCount = Convert.ToInt32(Console.ReadLine());
+            minute = (grannyCount * waitTime) % 60;
+            hour = (grannyCount * waitTime - minute) / 60;
+            Console.WriteLine("вы должны отстоять в очереди " + hour + " часов и " + minute + " минут.");
         }
         
     }
