@@ -10,16 +10,16 @@ namespace ConsoleAppForCSLight
     {
         static void Main(string[] args)
         {
-            int grannyCount;
-            int waitingOfHour;
-            int waitingOfMinute;
-            int waitTime = 10;
-            int howManyMinutesPerHour = 60;
-            Console.WriteLine("введите кол-во старушек");
-            grannyCount = Convert.ToInt32(Console.ReadLine());
-            waitingOfMinute = (grannyCount * waitTime) % howManyMinutesPerHour;
-            waitingOfHour = (grannyCount * waitTime) / howManyMinutesPerHour;
-            Console.WriteLine("вы должны отстоять в очереди " + waitingOfHour + " часов и " + waitingOfMinute + " минут.");
+            string nameUser;
+            string ageUser;
+            string userWork;
+            Console.WriteLine("как вас зовут?");
+            nameUser = Console.ReadLine();
+            Console.WriteLine("сколько вам лет?");
+            ageUser = Console.ReadLine();
+            Console.WriteLine("гле вы работаете?");
+            userWork = Console.ReadLine();
+            Console.WriteLine("вас зовут " + nameUser + ". Вам " + ageUser + ". Вы работаете " + userWork + ".");
         }
         
     }
