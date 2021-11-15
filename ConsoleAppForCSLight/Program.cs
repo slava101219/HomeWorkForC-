@@ -10,16 +10,17 @@ namespace ConsoleAppForCSLight
     {
         static void Main(string[] args)
         {
-            string nameUser;
-            string ageUser;
-            string userWork;
-            Console.WriteLine("как вас зовут?");
-            nameUser = Console.ReadLine();
-            Console.WriteLine("сколько вам лет?");
-            ageUser = Console.ReadLine();
-            Console.WriteLine("гле вы работаете?");
-            userWork = Console.ReadLine();
-            Console.WriteLine("вас зовут " + nameUser + ". Вам " + ageUser + ". Вы работаете " + userWork + ".");
+            int messegeCount;
+            int iteratorMessege = 0;
+            Console.WriteLine("сколько раз вывести \"Это сообщение\" сообщение?");
+            messegeCount = Convert.ToInt32(Console.ReadLine());
+            while (messegeCount>0)
+            {
+                iteratorMessege++;
+                Console.WriteLine("Это сообщение " + iteratorMessege + "-е");
+                messegeCount--;
+            }
+
         }
         
     }
