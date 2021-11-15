@@ -10,10 +10,11 @@ namespace ConsoleAppForCSLight
     {
         static void Main(string[] args)
         {
+            int tryCount = 10;
             string messegeUser;
             Console.WriteLine("Введите сообщение, которое выведется 10 раз.");
             messegeUser = Console.ReadLine();
-            for (int i = 1; i<=10; i++)
+            for (int i = 1; i<=tryCount; i++)
             {
                 Console.WriteLine(messegeUser + i);
             }
