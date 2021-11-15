@@ -10,15 +10,12 @@ namespace ConsoleAppForCSLight
     {
         static void Main(string[] args)
         {
-            int messegeCount;
-            int iteratorMessege = 0;
-            Console.WriteLine("сколько раз вывести \"Это сообщение\" сообщение?");
-            messegeCount = Convert.ToInt32(Console.ReadLine());
-            while (messegeCount>0)
+            string messegeUser;
+            Console.WriteLine("Введите сообщение, которое выведется 10 раз.");
+            messegeUser = Console.ReadLine();
+            for (int i = 1; i<=10; i++)
             {
-                iteratorMessege++;
-                Console.WriteLine("Это сообщение " + iteratorMessege + "-е");
-                messegeCount--;
+                Console.WriteLine(messegeUser + i);
             }
 
         }
