@@ -10,13 +10,14 @@ namespace ConsoleAppForCSLight
     {
         static void Main(string[] args)
         {
-            int tryCount = 10;
-            string messegeUser;
-            Console.WriteLine("Введите сообщение, которое выведется 10 раз.");
-            messegeUser = Console.ReadLine();
-            for (int i = 1; i<=tryCount; i++)
+            string wordForExit = "exit";
+            string inputWord;
+            Console.WriteLine("Введите \"exit\" для выхода.");
+            inputWord = Console.ReadLine();
+            while (inputWord != wordForExit)
             {
-                Console.WriteLine(messegeUser + i);
+                Console.WriteLine("Еще раз. Введите \"exit\" для выхода.");
+                inputWord = Console.ReadLine();
             }
 
         }
