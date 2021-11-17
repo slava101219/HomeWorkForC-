@@ -10,15 +10,16 @@ namespace ConsoleAppForCSLight
     {
         static void Main(string[] args)
         {
-            string wordForExit = "exit";
-            string inputWord;
-            Console.WriteLine("Введите \"exit\" для выхода.");
-            inputWord = Console.ReadLine();
-            while (inputWord != wordForExit)
-            {
-                Console.WriteLine("Еще раз. Введите \"exit\" для выхода.");
-                inputWord = Console.ReadLine();
-            }
+            double usdCount = 1000;
+            double eurCount = 1000;
+            double changeUsdCount;
+            double exchangeRate = 0.88;
+            Console.WriteLine("usd : " + usdCount + " eur : " + eurCount);
+            Console.WriteLine("сколько меняем доларов?");
+            changeUsdCount = Convert.ToDouble(Console.ReadLine());
+            usdCount -= changeUsdCount;
+            eurCount = eurCount + changeUsdCount * exchangeRate;
+            Console.WriteLine("usd : " + usdCount + " eur : " + eurCount);
 
         }
         
