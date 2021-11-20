@@ -30,47 +30,51 @@ namespace ConsoleAppForCSLight
                 spaceNine + "4 для eur => rub;\n" + spaceNine + "5 для rub => usd;\n" + spaceNine + "6 для rub => eur;\n" + spaceNine +
                 "7 для выхода");
                 selectionUser = Console.ReadLine();
-                
-                if (selectionUser == "7")
-                {
-                    continue;
-                }
-
-                Console.WriteLine("сколько меняем?");
-                changeMoneyCount = Convert.ToDouble(Console.ReadLine());
 
                 if (selectionUser == "1")
                 {
+                    Console.WriteLine("сколько меняем?");
+                    changeMoneyCount = Convert.ToDouble(Console.ReadLine());
                     usdCount -= changeMoneyCount;
                     eurCount = eurCount + changeMoneyCount * exchangeRateUsdToEur;                                       
                 }
 
                 else if (selectionUser == "2")
                 {
+                    Console.WriteLine("сколько меняем?");
+                    changeMoneyCount = Convert.ToDouble(Console.ReadLine());
                     usdCount -= changeMoneyCount;
                     rubCount = rubCount + changeMoneyCount * exchangeRateUsdToRub;
                 }
 
                 else if (selectionUser == "3")
                 {
+                    Console.WriteLine("сколько меняем?");
+                    changeMoneyCount = Convert.ToDouble(Console.ReadLine());
                     eurCount -= changeMoneyCount;
                     usdCount = usdCount + changeMoneyCount * exchangeRateEurToUsd;
                 }
 
                 else if (selectionUser == "4")
                 {
+                    Console.WriteLine("сколько меняем?");
+                    changeMoneyCount = Convert.ToDouble(Console.ReadLine());
                     eurCount -= changeMoneyCount;
                     rubCount = rubCount + changeMoneyCount * exchangeRateEurToRub;
                 }
 
                 else if (selectionUser == "5")
                 {
+                    Console.WriteLine("сколько меняем?");
+                    changeMoneyCount = Convert.ToDouble(Console.ReadLine());
                     rubCount -= changeMoneyCount;
                     usdCount = usdCount + changeMoneyCount * exchangeRateRubToUsd;
                 }
 
                 else if (selectionUser == "6")
                 {
+                    Console.WriteLine("сколько меняем?");
+                    changeMoneyCount = Convert.ToDouble(Console.ReadLine());
                     rubCount -= changeMoneyCount;
                     eurCount = eurCount + changeMoneyCount * exchangeRateRubToEur;
                 }
