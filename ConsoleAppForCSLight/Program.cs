@@ -10,13 +10,30 @@ namespace ConsoleAppForCSLight
     {
         static void Main(string[] args)
         {
-            int distance;
-            int maxDistance = 98;
-            int speed = 7;
-            for ( distance = speed; distance<=maxDistance; distance+=speed)
+            string name;
+            string myChar;
+            int lemgthName;
+            int iterator = 0;
+            string stringWithChars;
+            Console.WriteLine("ваше имя?");
+            name = Console.ReadLine();
+            Console.WriteLine("выбери знак.");
+            myChar = Console.ReadLine();
+
+            while (myChar.Length > 1 || myChar.Length < 1)
             {
-                Console.WriteLine(distance);
-            }                      
+                Console.WriteLine("выбери 1 знак.");
+                myChar = Console.ReadLine();
+            }
+            stringWithChars = myChar;
+            lemgthName = name.Length;
+
+            while (lemgthName+1 != iterator++)
+            {
+                stringWithChars += myChar;
+            }
+
+                Console.WriteLine(stringWithChars + "\n" + myChar + name + myChar + "\n" + stringWithChars);                      
         }       
     }
 }
