@@ -10,9 +10,12 @@ namespace ConsoleAppForCSLight
     {
         static void Main(string[] args)
         {
-            for (int i = 7; i<=98; i+=7)
+            int distance;
+            int maxDistance = 98;
+            int speed = 7;
+            for ( distance = speed; distance<=maxDistance; distance+=speed)
             {
-                Console.WriteLine(i);
+                Console.WriteLine(distance);
             }                      
         }       
     }
