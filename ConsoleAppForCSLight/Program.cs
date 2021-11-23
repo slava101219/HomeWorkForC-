@@ -12,7 +12,7 @@ namespace ConsoleAppForCSLight
         {
             string name;
             string myChar;
-            int lemgthName;
+            int lengthName;
             int iterator = 0;
             string stringWithChars;
             Console.WriteLine("ваше имя?");
@@ -26,14 +26,15 @@ namespace ConsoleAppForCSLight
                 myChar = Console.ReadLine();
             }
             stringWithChars = myChar;
-            lemgthName = name.Length;
 
-            while (lemgthName+1 != iterator++)
+            for (lengthName = name.Length + 1; lengthName != iterator; iterator++)
             {
                 stringWithChars += myChar;
             }
 
-                Console.WriteLine(stringWithChars + "\n" + myChar + name + myChar + "\n" + stringWithChars);                      
+            Console.WriteLine(stringWithChars);
+            Console.WriteLine(myChar + name + myChar);
+            Console.WriteLine(stringWithChars);
         }       
     }
 }
