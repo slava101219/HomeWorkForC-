@@ -10,28 +10,27 @@ namespace ConsoleAppForCSLight
     {
         static void Main(string[] args)
         {
-            string name;
-            string myChar;
-            string stringWithChars = "";
-            Console.WriteLine("ваше имя?");
-            name = Console.ReadLine();
-            Console.WriteLine("выбери знак.");
-            myChar = Console.ReadLine();
+            string password = "qwerty1234";
+            string inputWord;
+            int tryCount = 3;
+            Console.WriteLine("введите пароль! у вас " + tryCount + " попытки");
+            inputWord = Console.ReadLine();
 
-            while (myChar.Length > 1 || myChar.Length < 1)
+            while (password != inputWord && tryCount > 1)
             {
-                Console.WriteLine("выбери 1 знак.");
-                myChar = Console.ReadLine();
-            }
-            
-            for (int i = 0; name.Length + 2 != i; i++)
-            {
-                stringWithChars += myChar;
+                --tryCount;
+                Console.WriteLine("введите пароль, у вас " + tryCount + " попыток.");
+                inputWord = Console.ReadLine();
             }
 
-            Console.WriteLine(stringWithChars);
-            Console.WriteLine(myChar + name + myChar);
-            Console.WriteLine(stringWithChars);
-        }       
+            if (password == inputWord)
+            {
+                Console.WriteLine("Верный пароль!");
+            }
+            else
+            {
+                Console.WriteLine("Аккаунт заблокирован!");
+            }
+        }
     }
 }
