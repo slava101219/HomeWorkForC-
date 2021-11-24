@@ -12,9 +12,7 @@ namespace ConsoleAppForCSLight
         {
             string name;
             string myChar;
-            int lengthName;
-            int iterator = 0;
-            string stringWithChars;
+            string stringWithChars = "";
             Console.WriteLine("ваше имя?");
             name = Console.ReadLine();
             Console.WriteLine("выбери знак.");
@@ -25,9 +23,8 @@ namespace ConsoleAppForCSLight
                 Console.WriteLine("выбери 1 знак.");
                 myChar = Console.ReadLine();
             }
-            stringWithChars = myChar;
-
-            for (lengthName = name.Length + 1; lengthName != iterator; iterator++)
+            
+            for (int i = 0; name.Length + 2 != i; i++)
             {
                 stringWithChars += myChar;
             }
