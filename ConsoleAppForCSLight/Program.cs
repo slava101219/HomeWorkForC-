@@ -20,6 +20,8 @@ namespace ConsoleAppForCSLight
             double damageForOneSkill; 
             double damageForTwoSkill;
             double currentDamage = 0;
+            double coeffDefensIgnore = 0.8;
+            double coeffdefenceReduction = 0.95;
             int cooldownForTwoSkill = 0;
             int cooldownForThreeSkill = 0;
             string selectSkill;
@@ -52,14 +54,14 @@ namespace ConsoleAppForCSLight
                         currentDamage = damageForOneSkill;
                         break;
                     case "2":
-                        damageForTwoSkill = attackHero / (defenceBoss * 0.8) * attackHero;
+                        damageForTwoSkill = attackHero / (defenceBoss * coeffDefensIgnore) * attackHero;
                         HealthBoss -= damageForTwoSkill;
                         currentDamage = damageForTwoSkill;
                         healthHero += damageForTwoSkill;
                         cooldownForTwoSkill = 3;
                         break;
                     case "3":
-                        defenceBoss = defenceBoss * 0.95;
+                        defenceBoss = defenceBoss * coeffdefenceReduction;
                         damageForOneSkill = attackHero / defenceBoss * attackHero;
                         HealthBoss -= damageForOneSkill;
                         currentDamage = damageForOneSkill;
