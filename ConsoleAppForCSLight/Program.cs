@@ -10,43 +10,37 @@ namespace ConsoleAppForCSLight
     {
         static void Main(string[] args)
         {
-            int maxValue = 0;
             Random random = new Random();
-            int[,] array = new int [ 10, 10 ];
+            int[] array = new int [40];
 
-            for (int i = 0; i < array.GetLength(0); i++)
+            for (int i = 0; i < array.Length; i++)
             {
-                for (int j = 0; j < array.GetLength(1); j++)
-                {
-                    array[i, j] = random.Next(0, 100);
-                    Console.Write(array[i, j] + " ");
-
-                    if (maxValue < array[i, j])
-                    {
-                        maxValue = array[i, j];
-                    }
-                }
-                Console.WriteLine();
+                array[i] = random.Next(0, 30);
             }
 
-            Console.WriteLine(maxValue);
-
-            for (int i = 0; i < array.GetLength(0); i++)
+            foreach (int integer in array)
             {
-                for (int j = 0; j < array.GetLength(1); j++)
-                {
-                    
-                    if (maxValue == array[i, j])
-                    {
-                        array[i, j] = 0;
-                    }
-
-                    Console.Write(array[i, j] + " ");
-                }
-                Console.WriteLine();
+                Console.Write(integer + ", ");
             }
 
+            Console.WriteLine("");
 
+            if (array[0]>array[1])
+            {
+                Console.WriteLine(array[0]);
+            }
+
+            for (int i = 1; i < array.Length - 1; i++)
+            {
+                if (array[i]>array[i+1] && array[i]>array[i-1])
+                {
+                    Console.WriteLine(array[i]);
+                }
+            }
+            if (array[array.Length - 1] > array[array.Length - 2])
+            {
+                Console.WriteLine(array[array.Length - 1]);
+            }
         }
     }
 }
