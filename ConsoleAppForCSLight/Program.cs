@@ -10,32 +10,40 @@ namespace ConsoleAppForCSLight
     {
         static void Main(string[] args)
         {
-            int sum = 0;
-            int multiplication = 1;
+            int maxValue = 0;
             Random random = new Random();
-            int[,] array = new int [ 5, 3 ];
+            int[,] array = new int [ 10, 10 ];
 
             for (int i = 0; i < array.GetLength(0); i++)
             {
                 for (int j = 0; j < array.GetLength(1); j++)
                 {
-                    array[i, j] = random.Next(0, 10);
+                    array[i, j] = random.Next(0, 100);
+                    Console.Write(array[i, j] + " ");
+
+                    if (maxValue < array[i, j])
+                    {
+                        maxValue = array[i, j];
+                    }
+                }
+                Console.WriteLine();
+            }
+
+            for(int i = 0; i < array.GetLength(0); i++)
+            {
+                for (int j = 0; j < array.GetLength(1); j++)
+                {
+                    
+                    if (maxValue == array[i, j])
+                    {
+                        array[i, j] = 0;
+                    }
+
                     Console.Write(array[i, j] + " ");
                 }
                 Console.WriteLine();
             }
 
-            for (int i = 0; i < array.GetLength(1); i++)
-            {
-                sum += array[1, i];
-            }
-
-            for (int i = 0; i < array.GetLength(0); i++)
-            {
-                multiplication *= array[i, 0];
-            }
-
-            Console.WriteLine(sum + " | " + multiplication);
 
         }
     }
