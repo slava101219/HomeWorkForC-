@@ -13,7 +13,7 @@ namespace ConsoleAppForCSLight
             int sum = 0;
             int multiplication = 1;
             Random random = new Random();
-            int[,] array = new int [ 5, 5 ];
+            int[,] array = new int [ 5, 3 ];
 
             for (int i = 0; i < array.GetLength(0); i++)
             {
@@ -25,9 +25,13 @@ namespace ConsoleAppForCSLight
                 Console.WriteLine();
             }
 
-            for (int i = 0; i < array.GetLength(0); i++)
+            for (int i = 0; i < array.GetLength(1); i++)
             {
                 sum += array[1, i];
+            }
+
+            for (int i = 0; i < array.GetLength(0); i++)
+            {
                 multiplication *= array[i, 0];
             }
 
