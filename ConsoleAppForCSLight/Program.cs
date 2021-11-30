@@ -10,36 +10,37 @@ namespace ConsoleAppForCSLight
     {
         static void Main(string[] args)
         {
-            Random random = new Random();
-            int[] array = new int [40];
-
-            for (int i = 0; i < array.Length; i++)
+            int[] array = new int [0];
+            bool isWork = true;
+            int number;
+            int sumNumbers = 0;
+            string choiceUser;
+            while (isWork)
             {
-                array[i] = random.Next(0, 30);
-            }
+                Console.WriteLine("exit; sum; number.");
+                choiceUser = Console.ReadLine();
 
-            foreach (int integer in array)
-            {
-                Console.Write(integer + ", ");
-            }
-
-            Console.WriteLine("");
-
-            if (array[0]>array[1])
-            {
-                Console.WriteLine(array[0]);
-            }
-
-            for (int i = 1; i < array.Length - 1; i++)
-            {
-                if (array[i]>array[i+1] && array[i]>array[i-1])
+                if (choiceUser == "exit")
                 {
-                    Console.WriteLine(array[i]);
+                    isWork = false;
+                    Console.WriteLine("bye!");
                 }
-            }
-            if (array[array.Length - 1] > array[array.Length - 2])
-            {
-                Console.WriteLine(array[array.Length - 1]);
+
+                if (choiceUser == "sum")
+                {
+                    sumNumbers = 0;
+                    for (int i = 0; i<=array.Length-1; i++)
+                    {
+                        sumNumbers += array[i];
+                    }
+                    Console.WriteLine(sumNumbers);
+                }
+                else
+                {
+                    number = Int32.Parse(choiceUser);
+                    Array.Resize(ref array, array.Length + 1);
+                    array[array.Length-1] = number;
+                }
             }
         }
     }
