@@ -34,10 +34,6 @@ namespace ConsoleAppForCSLight
                         sumNumbers += array[i];
                     }
                     Console.WriteLine(sumNumbers);
-                    foreach (int num in array)
-                    {
-                        Console.Write(num + " ");
-                    }
                 }
                 else
                 {
