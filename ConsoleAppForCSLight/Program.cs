@@ -40,24 +40,14 @@ namespace ConsoleAppForCSLight
                     number = Int32.Parse(choiceUser);
                     int[] array2 = new int[array.Length + 1];
                     array2[array2.Length - 1] = number;
+
                     for (int i = 0; i < array.Length; i++)
                     {
                         array2[i] = array[i];
                     }
-                    
+
+                    array = array2;                   
                 }
-                Console.WriteLine("--------------------");
-                foreach (int e in array)
-                {
-                    Console.WriteLine(e + " ");
-                }
-                Console.WriteLine("--------------------");
-                Console.WriteLine("--------------------");
-                foreach (int e in array)
-                {
-                    Console.WriteLine(e + " ");
-                }
-                Console.WriteLine("--------------------");
             }
         }
     }
