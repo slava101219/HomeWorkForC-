@@ -17,7 +17,7 @@ namespace ConsoleAppForCSLight
 
             while (workApp)
             {
-                choice = OutPutMenu();
+                choice = ShowMenu();
 
                 switch (choice)
                 {
@@ -36,6 +36,9 @@ namespace ConsoleAppForCSLight
                     case "5":
                         workApp = false;
                         break;
+                    default:
+                        Console.WriteLine("не верный ввод.");
+                        break;
                 }                  
             }
         }
@@ -47,9 +50,9 @@ namespace ConsoleAppForCSLight
             lastName = Console.ReadLine();
             foreach (string name in fullNameArray)
             {
-                if (lastName.ToLower() == fullNameArray[iterator].ToLower())
+                if (lastName.ToLower() == name.ToLower())
                 {
-                    Console.WriteLine(fullNameArray[iterator] + " " + workPositionArray[iterator]);
+                    Console.WriteLine(name + " " + workPositionArray[iterator]);
                 }
                 iterator++;
             }
@@ -59,47 +62,35 @@ namespace ConsoleAppForCSLight
         {
             Console.WriteLine("введите номер удаляемого досье.");
             int indexDelete = Convert.ToInt32(Console.ReadLine())-1;
-            string[] copyArray = new string[0];
-            string[] copyArray2 = new string[0];
-            int counter = 0;
 
             if (fullNameArray.Length == 0 || workPositionArray.Length == 0)
             {
                 Console.WriteLine("удалять нечего.");
-                return;
             }
-            else if (fullNameArray.Length <= indexDelete || indexDelete < 0)
+            else if(fullNameArray.Length <= indexDelete || indexDelete < 0)
             {
                 Console.WriteLine("неверный номер.");
-                DeleteDossier(ref fullNameArray, ref workPositionArray);
             }
 
-            for (int i = 0; i < fullNameArray.Length; i++)
+            fullNameArray = CopyArray(fullNameArray, indexDelete);
+            workPositionArray = CopyArray(workPositionArray, indexDelete);
+        }
+
+        static string[] CopyArray(string[] sourceArray, int indexDelete)
+        {
+            int counter = 0;
+            string[] copyArray = new string[sourceArray.Length - 1];
+
+            for (int i = 0; i < sourceArray.Length; i++)
             {
                 if (i == indexDelete)
                 {
                     continue;
                 }
-                Array.Resize(ref copyArray, copyArray.Length + 1);
-                copyArray[counter] = fullNameArray[i];
+                copyArray[counter] = sourceArray[i];
                 counter++;
             }
-
-            counter = 0;
-
-            for (int i = 0; i < workPositionArray.Length; i++)
-            {
-                if (i == indexDelete)
-                {
-                    continue;
-                }
-                Array.Resize(ref copyArray2, copyArray2.Length + 1);
-                copyArray2[counter] = workPositionArray[i];
-                counter++;
-            }
-
-            fullNameArray = copyArray;
-            workPositionArray = copyArray2;
+            return copyArray;
         }
 
         static void OutPutAllDossiers(string[] fullNameArray, string[] workPositionArray)
@@ -115,15 +106,25 @@ namespace ConsoleAppForCSLight
         static void AddDossier(ref string[] fullNameArray, ref string[] workPositionArray)
         {
             Console.WriteLine("введите фамилию.");
-            string fullName = Console.ReadLine();
+            string fullNames = Console.ReadLine();
             Console.WriteLine("введите должность.");
-            string workPosition = Console.ReadLine();
-            Array.Resize(ref fullNameArray, fullNameArray.Length + 1);
-            fullNameArray[fullNameArray.Length - 1] = fullName;
-            Array.Resize(ref workPositionArray, workPositionArray.Length + 1);
-            workPositionArray[workPositionArray.Length - 1] = workPosition;
+            string workPositions = Console.ReadLine();
+            fullNameArray = AddToArray(fullNameArray, fullNames);
+            workPositionArray = AddToArray(workPositionArray, workPositions);
         }
-        static string OutPutMenu()
+
+        static string[] AddToArray(string[] sourceArray, string fullNames)
+        {
+            string[] increasedArray = new string[sourceArray.Length + 1];
+            for (int i = 0; i < sourceArray.Length; i++)
+            {
+                increasedArray[i] = sourceArray[i];
+            }
+            increasedArray[increasedArray.Length - 1] = fullNames;
+            return increasedArray;
+        }
+
+        static string ShowMenu()
         {
             Console.WriteLine("1) добавить досье " +
                 "2) вывести все досье" +
@@ -131,15 +132,7 @@ namespace ConsoleAppForCSLight
                 "4) поиск по фамилии" +
                 "5) выход");
             string choice = Console.ReadLine();
-
-            if (choice == "1" || choice == "2" || choice == "3" || choice == "4" || choice == "5")
-            {
-                return choice;
-            }
-            else
-            {
-                return OutPutMenu();
-            }
+            return choice;
         }
     }
 }
