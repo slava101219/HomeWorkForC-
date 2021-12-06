@@ -10,28 +10,29 @@ namespace ConsoleAppForCSLight
     {
         static void Main(string[] args)
         {
-            string[] fullNameArray = new string[0];
+            string[] fullNames = new string[0];
             string[] workPositionArray = new string[0];
             string choice;
             bool workApp = true;
 
             while (workApp)
             {
-                choice = ShowMenu();
+                ShowMenu();
+                choice = Console.ReadLine();
 
                 switch (choice)
                 {
                     case "1":
-                        AddDossier(ref fullNameArray,ref workPositionArray);
+                        AddDossier(ref fullNames,ref workPositionArray);
                         break;
                     case "2":
-                        OutPutAllDossiers(fullNameArray, workPositionArray);
+                        OutPutAllDossiers(fullNames, workPositionArray);
                         break;
                     case "3":
-                        DeleteDossier(ref fullNameArray, ref workPositionArray);
+                        DeleteDossier(ref fullNames, ref workPositionArray);
                         break;
                     case "4":
-                        SearchByLastName(fullNameArray, workPositionArray);
+                        SearchByLastName(fullNames, workPositionArray);
                         break;
                     case "5":
                         workApp = false;
@@ -42,41 +43,40 @@ namespace ConsoleAppForCSLight
                 }                  
             }
         }
-        static void SearchByLastName(string[] fullNameArray, string[] workPositionArray)
+        static void SearchByLastName(string[] arrayForSearch, string[] workPositionArray)
         {
-            int iterator = 0;
-            string lastName;
             Console.WriteLine("введите фамилию.");
-            lastName = Console.ReadLine();
-            foreach (string name in fullNameArray)
+            string lastName = Console.ReadLine();
+            for (int i = 0; i < arrayForSearch.Length - 1; i++)
             {
-                if (lastName.ToLower() == name.ToLower())
+                if (lastName.ToLower() == arrayForSearch[i].ToLower())
                 {
-                    Console.WriteLine(name + " " + workPositionArray[iterator]);
+                    Console.WriteLine(arrayForSearch[i] + " " + workPositionArray[i]);
                 }
-                iterator++;
             }
         }
 
-        static void DeleteDossier(ref string[] fullNameArray, ref string[] workPositionArray)
+        static void DeleteDossier(ref string[] fullNames, ref string[] workPositions)
         {
             Console.WriteLine("введите номер удаляемого досье.");
             int indexDelete = Convert.ToInt32(Console.ReadLine())-1;
 
-            if (fullNameArray.Length == 0 || workPositionArray.Length == 0)
+            if (fullNames.Length == 0 || workPositions.Length == 0)
             {
                 Console.WriteLine("удалять нечего.");
             }
-            else if(fullNameArray.Length <= indexDelete || indexDelete < 0)
+            else if(fullNames.Length <= indexDelete || indexDelete < 0)
             {
                 Console.WriteLine("неверный номер.");
             }
-
-            fullNameArray = CopyArray(fullNameArray, indexDelete);
-            workPositionArray = CopyArray(workPositionArray, indexDelete);
+            else
+            {
+                fullNames = DeletePosition(fullNames, indexDelete);
+                workPositions = DeletePosition(workPositions, indexDelete);
+            } 
         }
 
-        static string[] CopyArray(string[] sourceArray, int indexDelete)
+        static string[] DeletePosition(string[] sourceArray, int indexDelete)
         {
             int counter = 0;
             string[] copyArray = new string[sourceArray.Length - 1];
@@ -93,24 +93,24 @@ namespace ConsoleAppForCSLight
             return copyArray;
         }
 
-        static void OutPutAllDossiers(string[] fullNameArray, string[] workPositionArray)
+        static void OutPutAllDossiers(string[] fullNames, string[] workPositions)
         {
             int i = 0;
-            foreach (string name in fullNameArray)
+            foreach (string name in fullNames)
             {
-                Console.Write(++i + ") " + fullNameArray[i-1] + " - " + workPositionArray[i-1] + " ");
+                Console.Write(++i + ") " + fullNames[i-1] + " - " + workPositions[i-1] + " ");
             }
             Console.WriteLine();
         }
 
-        static void AddDossier(ref string[] fullNameArray, ref string[] workPositionArray)
+        static void AddDossier(ref string[] fullNames, ref string[] workPositions)
         {
             Console.WriteLine("введите фамилию.");
-            string fullNames = Console.ReadLine();
+            string fullName = Console.ReadLine();
             Console.WriteLine("введите должность.");
-            string workPositions = Console.ReadLine();
-            fullNameArray = AddToArray(fullNameArray, fullNames);
-            workPositionArray = AddToArray(workPositionArray, workPositions);
+            string workPosition = Console.ReadLine();
+            fullNames = AddToArray(fullNames, fullName);
+            workPositions = AddToArray(workPositions, workPosition);
         }
 
         static string[] AddToArray(string[] sourceArray, string fullNames)
@@ -124,15 +124,13 @@ namespace ConsoleAppForCSLight
             return increasedArray;
         }
 
-        static string ShowMenu()
+        static void ShowMenu()
         {
             Console.WriteLine("1) добавить досье " +
                 "2) вывести все досье" +
                 "3) удалить досье" +
                 "4) поиск по фамилии" +
                 "5) выход");
-            string choice = Console.ReadLine();
-            return choice;
         }
     }
 }
