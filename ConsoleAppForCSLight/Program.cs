@@ -10,27 +10,20 @@ namespace ConsoleAppForCSLight
     {
         static void Main(string[] args)
         {
-            DrawBar(4, 10, 5);
+            ParseMyString();
         }
-        static void DrawBar(int value, int maxValue, int position)
+        static int ParseMyString()
         {
-            string bar = "";
-
-            for (int i = 0; i < value; i++)
+            int output = 0;
+            bool exitFromMethod = false;
+              
+            while (exitFromMethod == false)
             {
-                bar += "#";
+                string inputString = Console.ReadLine();
+                exitFromMethod = int.TryParse(inputString, out output);
             }
 
-            Console.SetCursorPosition(0, position);
-            Console.Write("[" + bar);
-            bar = "";
-
-            for (int i = value; i < maxValue; i++)
-            {
-                bar += "_";
-            }
-
-            Console.Write(bar + "]");
+            return output;
         }
     }
 }
