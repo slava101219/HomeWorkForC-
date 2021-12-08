@@ -10,21 +10,21 @@ namespace ConsoleAppForCSLight
     {
         static void Main(string[] args)
         {
-            ParseMyString();
+            ConvertStringAndReturnNumber();
         }
 
         static int ConvertStringAndReturnNumber()
         {
-            int output = 0;
+            int returnValue = 0;
             bool exitFromMethod = false;
               
             while (exitFromMethod == false)
             {
                 string inputString = Console.ReadLine();
-                exitFromMethod = int.TryParse(inputString, out output);
+                exitFromMethod = int.TryParse(inputString, out returnValue);
             }
 
-            return output;
+            return returnValue;
         }
     }
 }
