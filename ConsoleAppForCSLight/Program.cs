@@ -12,7 +12,8 @@ namespace ConsoleAppForCSLight
         {
             ParseMyString();
         }
-        static int ParseMyString()
+
+        static int ConvertStringAndReturnNumber()
         {
             int output = 0;
             bool exitFromMethod = false;
