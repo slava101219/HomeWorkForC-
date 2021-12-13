@@ -10,113 +10,50 @@ namespace ConsoleAppForCSLight
     {
         static void Main(string[] args)
         {
-            Console.CursorVisible = false;
-            string hero = "S";
-            int yHero = 30;
-            int xHero = 10;
-            int dyHero = 0;
-            int dxHero = 0;
-            bool isPlaying = true;
-            string[,] map = FillAndDrowMap(20, 100);
+            string[] letters = { "A", "B", "C", "D", "E", "F", "G", "H", "I", "j"};
+            WriteArray(letters);
+            ShuffleArray(ref letters);
+            WriteArray(letters);
+        }
 
-            while (isPlaying)
+        static void WriteArray (string[] array)
+        {
+            foreach (string s in array)
             {
-                Console.SetCursorPosition(yHero, xHero);
-                Console.Write(hero);
-                FindDirectionMovementHero(ref dxHero, ref dyHero, ref xHero, ref yHero, map, hero);                             
+                Console.Write(s + " ");
+            }
+
+            Console.WriteLine();
+        }
+
+        static void ShuffleArray(ref string[] letters)
+        {
+            Random random = new Random();
+            for (int i = letters.Length - 1; i >= 0; i--)
+            {
+                int randomItem = random.Next(i);
+                string shuffledElement = letters[randomItem];
+                letters[randomItem] = letters[i];
+                letters[i] = shuffledElement;
             }
         }
 
-        static void FindDirectionMovementHero(ref int dxHero, ref int dyHero, ref int xHero, ref int yHero, string[,] map, string hero)
+        /*static void ShuffleArray (ref string[] letters)
         {
-            if (Console.KeyAvailable)
-            {
-                ConsoleKeyInfo key = Console.ReadKey(true);
+            Random rand = new Random();
+            string[] lettersCopy = letters;
+            int[] randomIndexsArray = new int[10];
+            int randomIndex;
 
-                switch (key.Key)
+            for (int i = 0; i < 10; i++)
+            {
+                randomIndex = rand.Next(0, 9);
+                if (!randomIndexsArray.Contains(randomIndex))
                 {
-                    case ConsoleKey.UpArrow:
-                        dxHero = -1; dyHero = 0;
-                        break;
-                    case ConsoleKey.DownArrow:
-                        dxHero = 1; dyHero = 0;
-                        break;
-                    case ConsoleKey.LeftArrow:
-                        dxHero = 0; dyHero = -1;
-                        break;
-                    case ConsoleKey.RightArrow:
-                        dxHero = 0; dyHero = 1;
-                        break;
+                    letters[i] = lettersCopy[randomIndex];
+                    randomIndexsArray[i] = randomIndex;
                 }
-
-                MovementHero(ref dxHero, ref dyHero, ref xHero, ref yHero, map, hero);
             }
-        }
-
-        static void MovementHero (ref int dxHero, ref int dyHero, ref int xHero, ref int yHero, string[,] map, string hero)
-        {
-            if (map[dxHero + xHero, yHero + dyHero] != "|" && map[dxHero + xHero, yHero + dyHero] != "-")
-            {
-                Console.SetCursorPosition(yHero, xHero);
-                Console.Write(" ");
-                xHero += dxHero;
-                yHero += dyHero;
-                Console.SetCursorPosition(yHero, xHero);
-                Console.Write(hero);
-            }
-        }
-
-        static string[,] FillAndDrowMap(int height, int width)
-        {
-            string[,] map = new string[height, width];
-
-            for (int i = 0; i < height; i++)
-            {
-                for (int j = 0; j < width; j++)
-                {
-                    if (i == 0)
-                    {
-                        map[i, j] = "-";
-                        Console.Write(map[i, j]);
-                    }
-                    else if (i == height-1)
-                    {
-                        map[i, j] = "-";
-                        Console.Write(map[i, j]);
-                    }
-                    else if (i > 0 && i < height - 1 && j == 0 )
-                    {
-                        map[i, j] = "|";
-                        Console.Write(map[i, j]);
-                    }
-                    else if (i > 0 && i < height - 1 && j == width - 1)
-                    {
-                        map[i, j] = "|";
-                        Console.Write(map[i, j]);
-                    }
-                    else
-                    {
-                        map[i, j] = " ";
-                        Console.Write(map[i, j]);
-                    }
-                }
-                Console.WriteLine();
-            }
-            return map;
-        }
-
-        static void DrowMap (string[,] map)
-        {
-            int strngsInMap = map.GetUpperBound(0) + 1;
-            int charsInString = map.Length / strngsInMap;
-            for (int i = 0; i < strngsInMap; i++)
-            {
-                for (int j = 0; j < charsInString; j++)
-                {
-                    Console.Write(map[i, j]);
-                }
-                Console.WriteLine();
-            }
-        }
+        }*/
     }
 }
