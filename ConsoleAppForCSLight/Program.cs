@@ -23,38 +23,46 @@ namespace ConsoleAppForCSLight
             {
                 Console.SetCursorPosition(yHero, xHero);
                 Console.Write(hero);
+                FindDirectionMovementHero(ref dxHero, ref dyHero, ref xHero, ref yHero, map, hero);                             
+            }
+        }
 
-                if (Console.KeyAvailable)
+        static void FindDirectionMovementHero(ref int dxHero, ref int dyHero, ref int xHero, ref int yHero, string[,] map, string hero)
+        {
+            if (Console.KeyAvailable)
+            {
+                ConsoleKeyInfo key = Console.ReadKey(true);
+
+                switch (key.Key)
                 {
-                    ConsoleKeyInfo key = Console.ReadKey(true);
-
-                    switch(key.Key)
-                    {
-                        case ConsoleKey.UpArrow:
-                            dxHero = -1; dyHero = 0;
-                            break;
-                        case ConsoleKey.DownArrow:
-                            dxHero = 1; dyHero = 0;
-                            break;
-                        case ConsoleKey.LeftArrow:
-                            dxHero = 0; dyHero = -1;
-                            break;
-                        case ConsoleKey.RightArrow:
-                            dxHero = 0; dyHero = 1;
-                            break;
-                    }
-
-                    if (map[dxHero + xHero, yHero + dyHero] != "|" && map[dxHero + xHero, yHero + dyHero] != "-")
-                    {
-                        Console.SetCursorPosition(yHero, xHero);
-                        Console.Write(" ");
-                        xHero += dxHero;
-                        yHero += dyHero;
-                        Console.SetCursorPosition(yHero, xHero);
-                        Console.Write(hero);
-                    }                   
+                    case ConsoleKey.UpArrow:
+                        dxHero = -1; dyHero = 0;
+                        break;
+                    case ConsoleKey.DownArrow:
+                        dxHero = 1; dyHero = 0;
+                        break;
+                    case ConsoleKey.LeftArrow:
+                        dxHero = 0; dyHero = -1;
+                        break;
+                    case ConsoleKey.RightArrow:
+                        dxHero = 0; dyHero = 1;
+                        break;
                 }
-S               
+
+                MovementHero(ref dxHero, ref dyHero, ref xHero, ref yHero, map, hero);
+            }
+        }
+
+        static void MovementHero (ref int dxHero, ref int dyHero, ref int xHero, ref int yHero, string[,] map, string hero)
+        {
+            if (map[dxHero + xHero, yHero + dyHero] != "|" && map[dxHero + xHero, yHero + dyHero] != "-")
+            {
+                Console.SetCursorPosition(yHero, xHero);
+                Console.Write(" ");
+                xHero += dxHero;
+                yHero += dyHero;
+                Console.SetCursorPosition(yHero, xHero);
+                Console.Write(hero);
             }
         }
 
