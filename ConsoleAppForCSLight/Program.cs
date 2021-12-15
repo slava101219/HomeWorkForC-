@@ -10,32 +10,23 @@ namespace ConsoleAppForCSLight
     {
         static void Main(string[] args)
         {
-            string[] letters = { "A", "B", "C", "D", "E", "F", "G", "H", "I", "j"};
-            WriteArray(letters);
-            ShuffleArray(ref letters);
-            WriteArray(letters);
-        }
+            string searchWord;
 
-        static void WriteArray (string[] array)
-        {
-            foreach (string s in array)
+            Dictionary<string, string> interpretationDictionary = new Dictionary<string, string>();
+            interpretationDictionary.Add("1", "цифра");
+            interpretationDictionary.Add("2", "цифра");
+            interpretationDictionary.Add("3", "цифра");
+            interpretationDictionary.Add("4", "цифра");
+            Console.WriteLine("ввести искомое слово.");
+            searchWord = Console.ReadLine();
+
+            if(interpretationDictionary.ContainsKey(searchWord))
             {
-                Console.Write(s + " ");
+                Console.WriteLine(interpretationDictionary[searchWord]);
             }
-
-            Console.WriteLine();
-        }
-
-        static void ShuffleArray(ref string[] letters)
-        {
-            Random random = new Random();
-
-            for (int i = letters.Length - 1; i >= 0; i--)
+            else
             {
-                int randomItem = random.Next(i);
-                string shuffledElement = letters[randomItem];
-                letters[randomItem] = letters[i];
-                letters[i] = shuffledElement;
+                Console.WriteLine("такого слова нет.");
             }
         }
     }
