@@ -10,23 +10,21 @@ namespace ConsoleAppForCSLight
     {
         static void Main(string[] args)
         {
-            string searchWord;
+            int paymentСount = 0;
+            Queue<int> payments = new Queue<int>();
+            payments.Enqueue(23);
+            payments.Enqueue(21);
+            payments.Enqueue(67);
+            payments.Enqueue(43);
+            payments.Enqueue(56);
 
-            Dictionary<string, string> interpretationDictionary = new Dictionary<string, string>();
-            interpretationDictionary.Add("1", "цифра");
-            interpretationDictionary.Add("2", "цифра");
-            interpretationDictionary.Add("3", "цифра");
-            interpretationDictionary.Add("4", "цифра");
-            Console.WriteLine("ввести искомое слово.");
-            searchWord = Console.ReadLine();
-
-            if(interpretationDictionary.ContainsKey(searchWord))
+            foreach (int pay in payments)
             {
-                Console.WriteLine(interpretationDictionary[searchWord]);
-            }
-            else
-            {
-                Console.WriteLine("такого слова нет.");
+                Console.WriteLine("купили на " + pay);
+                paymentСount += pay;
+                Console.WriteLine("На счету " + paymentСount);
+                Console.ReadKey();
+                Console.Clear();
             }
         }
     }
