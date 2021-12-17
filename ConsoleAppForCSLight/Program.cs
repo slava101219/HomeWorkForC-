@@ -10,33 +10,34 @@ namespace ConsoleAppForCSLight
     {
         static void Main(string[] args)
         {
-            int paymentСount = 0;
+            int paymentAcount = 0;
             Queue<int> payments = new Queue<int>();
-            AddPurchases(ref payments, 23);
-            AddPurchases(ref payments, 21);
-            AddPurchases(ref payments, 67);
-            AddPurchases(ref payments, 43);
-            AddPurchases(ref payments, 56);
+
+            AddPurchases(payments);
 
             while (payments.Count != 0)
             {
-                ShowAllPurchases(payments, ref paymentСount);
+                CustomerService(payments, ref paymentAcount);
                 Console.ReadKey();
                 Console.Clear();
             }
         }
 
-        static void AddPurchases (ref Queue <int> payments, int pay)
+        static void AddPurchases (Queue <int> payments)
         {
-            payments.Enqueue(pay);
+            payments.Enqueue(23);
+            payments.Enqueue(21);
+            payments.Enqueue(67);
+            payments.Enqueue(43);
+            payments.Enqueue(56);
         }
 
-        static void ShowAllPurchases (Queue <int> payments, ref int paymentСount)
+        static void CustomerService (Queue <int> payments,ref int paymentAcount)
         {
             int pay = payments.Dequeue();
-            paymentСount += pay;
+            paymentAcount += pay;
             Console.WriteLine("купили на " + pay);
-            Console.WriteLine("На счету " + paymentСount);
+            Console.WriteLine("На счету " + paymentAcount);
         }
     }
 }
