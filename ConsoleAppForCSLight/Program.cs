@@ -10,34 +10,42 @@ namespace ConsoleAppForCSLight
     {
         static void Main(string[] args)
         {
-            int paymentAcount = 0;
-            Queue<int> payments = new Queue<int>();
+            List<int> numbers = new List<int>();
+            bool isWork = true;
+            string result = "";
+            int number = 0;
+            int sum = 0;
+            numbers.Add(number);
 
-            AddPurchases(payments);
-
-            while (payments.Count != 0)
+            while (isWork)
             {
-                CustomerService(payments, ref paymentAcount);
-                Console.ReadKey();
-                Console.Clear();
-            }
-        }
+                result = Console.ReadLine();
+                if (result == "sum")
+                {
+                    for (int i = 0; i < numbers.Count; i++)
+                    {
+                        sum += numbers[i];
+                    }
+                    Console.WriteLine(sum);
+                    sum = 0;
+                }
 
-        static void AddPurchases (Queue <int> payments)
-        {
-            payments.Enqueue(23);
-            payments.Enqueue(21);
-            payments.Enqueue(67);
-            payments.Enqueue(43);
-            payments.Enqueue(56);
-        }
+                if (result == "exit")
+                {
+                    isWork = false;
+                }
 
-        static void CustomerService (Queue <int> payments,ref int paymentAcount)
-        {
-            int pay = payments.Dequeue();
-            paymentAcount += pay;
-            Console.WriteLine("купили на " + pay);
-            Console.WriteLine("На счету " + paymentAcount);
+                if (!int.TryParse(result, out number) && result != "exit" && result != "sum")
+                {
+                    Console.WriteLine("Введите целое число.");
+                }
+                
+                if (int.TryParse(result, out number))
+                {
+                    number = int.Parse(result);
+                    numbers.Add(number);
+                }
+            }           
         }
     }
 }
