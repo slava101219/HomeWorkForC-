@@ -14,38 +14,39 @@ namespace ConsoleAppForCSLight
             bool isWork = true;
             string result = "";
             int number = 0;
-            int sum = 0;
             numbers.Add(number);
 
             while (isWork)
             {
                 result = Console.ReadLine();
+
                 if (result == "sum")
                 {
-                    for (int i = 0; i < numbers.Count; i++)
-                    {
-                        sum += numbers[i];
-                    }
-                    Console.WriteLine(sum);
-                    sum = 0;
+                    Console.WriteLine(SumNumbers(numbers));
                 }
-
-                if (result == "exit")
+                else if (result == "exit")
                 {
                     isWork = false;
                 }
-
-                if (!int.TryParse(result, out number) && result != "exit" && result != "sum")
+                else if (!int.TryParse(result, out number) && result != "exit" && result != "sum")
                 {
                     Console.WriteLine("Введите целое число.");
                 }
-                
-                if (int.TryParse(result, out number))
+                else
                 {
-                    number = int.Parse(result);
-                    numbers.Add(number);
+                    numbers.Add(int.Parse(result));
                 }
             }           
+        }
+
+        static int SumNumbers (List<int> numbers)
+        {
+            int sum = 0;
+            for (int i = 0; i < numbers.Count; i++)
+            {
+                sum += numbers[i];
+            }
+            return sum;
         }
     }
 }
