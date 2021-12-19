@@ -29,7 +29,7 @@ namespace ConsoleAppForCSLight
                 }
                 else if (int.TryParse(result, out number))
                 {
-                    numbers.Add(int.Parse(result)); 
+                    numbers.Add(number); 
                 }
                 else
                 {
