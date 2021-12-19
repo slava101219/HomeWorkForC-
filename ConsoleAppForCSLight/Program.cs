@@ -12,9 +12,8 @@ namespace ConsoleAppForCSLight
         {
             List<int> numbers = new List<int>();
             bool isWork = true;
-            string result = "";
-            int number = 0;
-            numbers.Add(number);
+            string result;
+            int number;
 
             while (isWork)
             {
@@ -28,13 +27,13 @@ namespace ConsoleAppForCSLight
                 {
                     isWork = false;
                 }
-                else if (!int.TryParse(result, out number) && result != "exit" && result != "sum")
+                else if (int.TryParse(result, out number))
                 {
-                    Console.WriteLine("Введите целое число.");
+                    numbers.Add(int.Parse(result)); 
                 }
                 else
                 {
-                    numbers.Add(int.Parse(result));
+                    Console.WriteLine("Введите целое число.");
                 }
             }           
         }
