@@ -8,44 +8,74 @@ namespace ConsoleAppForCSLight
 {
     class Program
     {
+
         static void Main(string[] args)
         {
-            List<int> numbers = new List<int>();
+            /*
+             1) добавить досье
+
+2) вывести все досье (в одну строку через “-” фио и должность)
+
+3) удалить досье
+
+4) выход
+             */
+            string choice = " ";
+            Dictionary<int, string> dossiers = new Dictionary<int, string>();
             bool isWork = true;
-            string result;
-            int number;
+            int numberDelete = 0;
 
-            while (isWork)
+            while(isWork)
             {
-                result = Console.ReadLine();
+                Console.WriteLine("1)добавить досье 2) вывести все досье(в одну строку через “-” фио и должность) 3) удалить досье 4) выход");
+                choice = Console.ReadLine();
 
-                if (result == "sum")
+                switch (choice)
                 {
-                    Console.WriteLine(SumNumbers(numbers));
+                    case "1":
+                        Console.WriteLine("введите фио");
+                        dossiers.Add(dossiers.Count + 1, Console.ReadLine());
+                        break;
+                    case "2":
+                        for (int i = 0; i < dossiers.Count; i++)
+                        {
+                            Console.Write((i + 1) + " " + dossiers[i + 1] + "; ");
+                        }
+                        break;
+                    case "3":
+                        Console.WriteLine("введите номер удаляемого досье");
+                        DeleteFromDossiers(Console.ReadLine(), dossiers);
+                        break;
+                    case "4":
+                        isWork = false;
+                        break;
+                    default:
+                        Console.WriteLine("неверный ввод");
+                        break;
                 }
-                else if (result == "exit")
+                
+            }
+        }
+
+        static void DeleteFromDossiers (string choice, Dictionary<int, string> dossiers)
+        {
+            int numberDelete = 0;
+
+            if (int.TryParse(choice, out numberDelete))
+            {
+                if (numberDelete > dossiers.Count || numberDelete < 1)
                 {
-                    isWork = false;
-                }
-                else if (int.TryParse(result, out number))
-                {
-                    numbers.Add(number); 
+                    Console.WriteLine("такого досье нет.");
                 }
                 else
                 {
-                    Console.WriteLine("Введите целое число.");
+                    dossiers.Remove(numberDelete);
                 }
-            }           
-        }
-
-        static int SumNumbers (List<int> numbers)
-        {
-            int sum = 0;
-            for (int i = 0; i < numbers.Count; i++)
-            {
-                sum += numbers[i];
             }
-            return sum;
+            else
+            {
+                Console.WriteLine("нужно ввести номер");
+            }
         }
     }
 }
