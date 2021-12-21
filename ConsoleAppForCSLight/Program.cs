@@ -11,36 +11,30 @@ namespace ConsoleAppForCSLight
 
         static void Main(string[] args)
         {
-            /*
-             1) добавить досье
-
-2) вывести все досье (в одну строку через “-” фио и должность)
-
-3) удалить досье
-
-4) выход
-             */
-            string choice = " ";
-            Dictionary<int, string> dossiers = new Dictionary<int, string>();
+            string choice;
+            List<string> dossiers = new List<string>();
             bool isWork = true;
-            int numberDelete = 0;
+            
 
             while(isWork)
             {
-                Console.WriteLine("1)добавить досье 2) вывести все досье(в одну строку через “-” фио и должность) 3) удалить досье 4) выход");
+                int iterator = 1;
+                Console.WriteLine("1)добавить досье 2) вывести все досье 3) удалить досье 4) выход");
                 choice = Console.ReadLine();
 
                 switch (choice)
                 {
                     case "1":
                         Console.WriteLine("введите фио");
-                        dossiers.Add(dossiers.Count + 1, Console.ReadLine());
+                        dossiers.Add(Console.ReadLine());
                         break;
                     case "2":
-                        for (int i = 0; i < dossiers.Count; i++)
+                        foreach (string s in dossiers)
                         {
-                            Console.Write((i + 1) + " " + dossiers[i + 1] + "; ");
+                            Console.Write((iterator) + " " + s + "; ");
+                            iterator++;
                         }
+                        Console.WriteLine();
                         break;
                     case "3":
                         Console.WriteLine("введите номер удаляемого досье");
@@ -57,7 +51,7 @@ namespace ConsoleAppForCSLight
             }
         }
 
-        static void DeleteFromDossiers (string choice, Dictionary<int, string> dossiers)
+        static void DeleteFromDossiers (string choice, List<string> dossiers)
         {
             int numberDelete = 0;
 
@@ -69,7 +63,7 @@ namespace ConsoleAppForCSLight
                 }
                 else
                 {
-                    dossiers.Remove(numberDelete);
+                    dossiers.RemoveAt(numberDelete - 1);
                 }
             }
             else
