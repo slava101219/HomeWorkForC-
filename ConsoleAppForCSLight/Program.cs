@@ -13,32 +13,24 @@ namespace ConsoleAppForCSLight
         {
             string choice;
             List<string> dossiers = new List<string>();
+            List<string> positionsHeld = new List<string>();
             bool isWork = true;
             
-
             while(isWork)
-            {
-                int iterator = 1;
+            {              
                 Console.WriteLine("1)добавить досье 2) вывести все досье 3) удалить досье 4) выход");
                 choice = Console.ReadLine();
 
                 switch (choice)
                 {
                     case "1":
-                        Console.WriteLine("введите фио");
-                        dossiers.Add(Console.ReadLine());
+                        AddNewDossier(dossiers, positionsHeld);
                         break;
                     case "2":
-                        foreach (string s in dossiers)
-                        {
-                            Console.Write((iterator) + " " + s + "; ");
-                            iterator++;
-                        }
-                        Console.WriteLine();
+                        ShowAllDossiers(dossiers, positionsHeld);
                         break;
                     case "3":
-                        Console.WriteLine("введите номер удаляемого досье");
-                        DeleteFromDossiers(Console.ReadLine(), dossiers);
+                        DeleteFromDossiers(Console.ReadLine(), dossiers, positionsHeld);
                         break;
                     case "4":
                         isWork = false;
@@ -51,9 +43,10 @@ namespace ConsoleAppForCSLight
             }
         }
 
-        static void DeleteFromDossiers (string choice, List<string> dossiers)
+        static void DeleteFromDossiers (string choice, List<string> dossiers, List<string> positionsHeld)
         {
-            int numberDelete = 0;
+            int numberDelete;
+            Console.WriteLine("введите номер удаляемого досье");
 
             if (int.TryParse(choice, out numberDelete))
             {
@@ -64,12 +57,30 @@ namespace ConsoleAppForCSLight
                 else
                 {
                     dossiers.RemoveAt(numberDelete - 1);
+                    positionsHeld.RemoveAt(numberDelete - 1);
                 }
             }
             else
             {
                 Console.WriteLine("нужно ввести номер");
             }
+        }
+
+        static void AddNewDossier(List<string> dossiers, List<string> positionsHeld)
+        {
+            Console.WriteLine("введите фио");
+            dossiers.Add(Console.ReadLine());
+            Console.WriteLine("введите должность");
+            positionsHeld.Add(Console.ReadLine());
+        }
+
+        static void ShowAllDossiers (List<string> dossiers, List<string> positionsHeld)
+        {
+            for (int i = 0; i < dossiers.Count; i++)
+            {
+                Console.Write((i + 1) + " " + dossiers[i] + " - " + positionsHeld[i] + "; ");
+            }
+            Console.WriteLine();
         }
     }
 }
