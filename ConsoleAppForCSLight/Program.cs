@@ -32,16 +32,16 @@ namespace ConsoleAppForCSLight
 
     class Renderer
     {
-        private Player Player;
+        private Player _player;
         public Renderer(Player player)
         {
-            Player = player;
+            _player = player;
         }
 
         public void DrowObject()
         {
-            Console.SetCursorPosition(Player.XСoordinate, Player.YСoordinate);
-            Console.Write(Player.Logo);
+            Console.SetCursorPosition(_player.XСoordinate, _player.YСoordinate);
+            Console.Write(_player.Logo);
         }
     }
 }
