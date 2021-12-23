@@ -11,38 +11,37 @@ namespace ConsoleAppForCSLight
 
         static void Main(string[] args)
         {
-            Player player = new Player(30, 10, "$");
-            Renderer render = new Renderer(player);
-            render.DrowObject(player.X, player.Y, player.Logo);
+            Renderer render = new Renderer(new Player(30, 10, "$"));
+            render.DrowObject();
         }
     }
 
     class Player
     {
-        public int X;
-        public int Y;
-        public string Logo;
+        public int XСoordinate { get; }
+        public int YСoordinate { get; }
+        public string Logo { get; }
 
-        public Player(int x, int y, string logo)
+        public Player(int xСoordinate, int yСoordinate, string logo)
         {
-            X = x;
-            Y = y;
+            XСoordinate = xСoordinate;
+            YСoordinate = yСoordinate;
             Logo = logo;
         }
     }
 
     class Renderer
     {
-        public Object Obj;
-        public Renderer(Object obj)
+        private Player Player;
+        public Renderer(Player player)
         {
-            Obj = obj;
+            Player = player;
         }
 
-        public void DrowObject(int x, int y, string logo)
+        public void DrowObject()
         {
-            Console.SetCursorPosition(x, y);
-            Console.Write(logo);
+            Console.SetCursorPosition(Player.XСoordinate, Player.YСoordinate);
+            Console.Write(Player.Logo);
         }
     }
 }
