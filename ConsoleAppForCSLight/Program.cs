@@ -23,7 +23,7 @@ namespace ConsoleAppForCSLight
                 switch (choice)
                 {
                     case "1":
-                        dataBase.ShowPlayersDB();
+                        dataBase.ShowPlayers();
                         break;
                     case "2":
                         Console.WriteLine("введите ник для нового игрока");
@@ -97,19 +97,19 @@ namespace ConsoleAppForCSLight
 
     class Database
     {
-        private List<Player> _dBPlayers;
+        private List<Player> _players;
 
-        public Database(List<Player> dBPlayers)
+        public Database(List<Player> players)
         {
-            _dBPlayers = dBPlayers;
+            _players = players;
         }
 
-        public void ShowPlayersDB()
+        public void ShowPlayers()
         {
-            for(int i = 0; i < _dBPlayers.Count; i++)
+            for(int i = 0; i < _players.Count; i++)
             {
-                Console.Write((i + 1) + ") " + _dBPlayers[i].Nickname + ", " + _dBPlayers[i].Lvl + " lvl, ");
-                if (_dBPlayers[i].IsBanned == false)
+                Console.Write((i + 1) + ") " + _players[i].Nickname + ", " + _players[i].Lvl + " lvl, ");
+                if (_players[i].IsBanned == false)
                 {
                     Console.WriteLine("не забанен.");
                 }
@@ -122,14 +122,14 @@ namespace ConsoleAppForCSLight
 
         public void AddPlayer(Player player)
         {
-            _dBPlayers.Add(player);
+            _players.Add(player);
         }
 
         public void BanPlayer (int numberPlayer)
         {
             if (CheckPlayerExistence(numberPlayer))
             {
-                _dBPlayers[numberPlayer - 1].Ban();
+                _players[numberPlayer - 1].Ban();
             }
         }
 
@@ -137,13 +137,13 @@ namespace ConsoleAppForCSLight
         {
             if (CheckPlayerExistence(numberPlayer))
             {
-                _dBPlayers[numberPlayer - 1].Unban();                
+                _players[numberPlayer - 1].Unban();                
             }
         }
 
         public bool CheckPlayerExistence(int numberPlayer)
         {
-            if (numberPlayer > 0 && numberPlayer <= _dBPlayers.Count)
+            if (numberPlayer > 0 && numberPlayer <= _players.Count)
             {              
                 return true;
             }
@@ -158,7 +158,7 @@ namespace ConsoleAppForCSLight
         {
             if (CheckPlayerExistence(numberPlayer))
             {
-                _dBPlayers.RemoveAt(numberPlayer - 1);
+                _players.RemoveAt(numberPlayer - 1);
             }
         }
     }
