@@ -30,13 +30,13 @@ namespace ConsoleAppForCSLight
                         dataBase.AddPlayer(new Player(Console.ReadLine()));
                         break;
                     case "3":
-                        BanUnbanOrDelete(choice);
+                        dataBase.BanPlayer(GetPlayerNumber());
                         break;
                     case "4":
-                        BanUnbanOrDelete(choice);
+                        dataBase.UnbanPlayer(GetPlayerNumber());
                         break;
                     case "5":
-                        BanUnbanOrDelete(choice);
+                        dataBase.DeletePlayer(GetPlayerNumber());
                         break;
                     case "6":
                         Exit();
@@ -58,28 +58,17 @@ namespace ConsoleAppForCSLight
             isWork = false;
         }
 
-        static void BanUnbanOrDelete(string choice)
+        static int GetPlayerNumber()
         {
             Console.WriteLine("введите номер игрока.");
 
             if (int.TryParse(Console.ReadLine(), out int result))
             {
-                if (choice == "3")
-                {
-                    dataBase.BanPlayer(result, true);
-                }
-                else if (choice == "4")
-                {
-                    dataBase.BanPlayer(result, false);
-                }
-                else
-                {
-                    dataBase.DeletePlayer(result);
-                }              
+                return result;
             }
             else
             {
-                Console.WriteLine("ошибка ввода.");
+                return -1;
             }
         }
     }
@@ -136,34 +125,40 @@ namespace ConsoleAppForCSLight
             _dBPlayers.Add(player);
         }
 
-        public void BanPlayer (int numberPlayer, bool choice)
+        public void BanPlayer (int numberPlayer)
         {
-            if(numberPlayer > 0 && numberPlayer <= _dBPlayers.Count)
+            if (CheckPlayerExistence(numberPlayer))
             {
-                if (choice == true)
-                {
-                    _dBPlayers[numberPlayer - 1].Ban();
-                }
-                else
-                {
-                    _dBPlayers[numberPlayer - 1].Unban();
-                }
+                _dBPlayers[numberPlayer - 1].Ban();
+            }
+        }
+
+        public void UnbanPlayer(int numberPlayer)
+        {
+            if (CheckPlayerExistence(numberPlayer))
+            {
+                _dBPlayers[numberPlayer - 1].Unban();                
+            }
+        }
+
+        public bool CheckPlayerExistence(int numberPlayer)
+        {
+            if (numberPlayer > 0 && numberPlayer <= _dBPlayers.Count)
+            {              
+                return true;
             }
             else
             {
                 Console.WriteLine("игрок не найден");
-            }          
+                return false;
+            }
         }
 
         public void DeletePlayer (int numberPlayer)
         {
-            if (numberPlayer > 0 && numberPlayer <= _dBPlayers.Count)
+            if (CheckPlayerExistence(numberPlayer))
             {
                 _dBPlayers.RemoveAt(numberPlayer - 1);
-            }
-            else
-            {
-                Console.WriteLine("игрок не найден");
             }
         }
     }
