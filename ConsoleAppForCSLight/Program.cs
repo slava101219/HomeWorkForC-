@@ -136,7 +136,7 @@ namespace ConsoleAppForCSLight
             _dBPlayers.Add(player);
         }
 
-        public void BanSPlayer (int numberPlayer, bool choice)
+        public void BanPlayer (int numberPlayer, bool choice)
         {
             if(numberPlayer > 0 && numberPlayer <= _dBPlayers.Count)
             {
