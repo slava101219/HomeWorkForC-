@@ -7,13 +7,13 @@ using System.Threading.Tasks;
 namespace ConsoleAppForCSLight
 {
     class Program
-    {
-        static bool isWork = true;
-        static Database dataBase = new Database(new List<Player>());
+    { 
 
         static void Main(string[] args)
         {         
             string choice;
+            bool isWork = true;
+            Database dataBase = new Database(new List<Player>());
 
             while (isWork)
             {
@@ -26,7 +26,6 @@ namespace ConsoleAppForCSLight
                         dataBase.ShowPlayers();
                         break;
                     case "2":
-                        Console.WriteLine("введите ник для нового игрока");
                         dataBase.AddPlayer(new Player(Console.ReadLine()));
                         break;
                     case "3":
@@ -39,7 +38,7 @@ namespace ConsoleAppForCSLight
                         dataBase.DeletePlayer(GetPlayerNumber());
                         break;
                     case "6":
-                        Exit();
+                        isWork = false;
                         break;
                     default:
                         Console.WriteLine("пункт в меню не найден");
@@ -51,11 +50,6 @@ namespace ConsoleAppForCSLight
         static void ShowMenu()
         {
             Console.WriteLine("1) вывод базы. 2) добавление игрока. 3) забанить игрока. 4) разбанить игрока. 5) удалить игрока. 6) выход.");
-        }
-
-        static void Exit()
-        {
-            isWork = false;
         }
 
         static int GetPlayerNumber()
@@ -122,6 +116,7 @@ namespace ConsoleAppForCSLight
 
         public void AddPlayer(Player player)
         {
+            Console.WriteLine("введите ник для нового игрока");
             _players.Add(player);
         }
 
