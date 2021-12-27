@@ -73,18 +73,18 @@ namespace ConsoleAppForCSLight
 
     class Player
     {
-        public int _lvl { get; private set; } = 1;
-        public string _nickname { get; private set; }
-        public bool _isBanned { get; private set; } = false;
+        public int Lvl { get; private set; } = 1;
+        public string Nickname { get; private set; }
+        public bool IsBanned { get; private set; } = false;
 
         public Player(string nickname)
         {
-            _nickname = nickname;
+            Nickname = nickname;
         }
 
         public void BannedPlayer()
         {
-            _isBanned = !_isBanned;
+            IsBanned = !IsBanned;
         }
     }
 
@@ -101,8 +101,8 @@ namespace ConsoleAppForCSLight
         {
             foreach(Player player in DBPlayers)
             {
-                Console.Write((DBPlayers.IndexOf(player) + 1) + ") " + player._nickname + ", " + player._lvl + " lvl, ");
-                if (player._isBanned == false)
+                Console.Write((DBPlayers.IndexOf(player) + 1) + ") " + player.Nickname + ", " + player.Lvl + " lvl, ");
+                if (player.IsBanned == false)
                 {
                     Console.WriteLine("не забанен.");
                 }
