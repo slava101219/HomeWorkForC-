@@ -8,11 +8,11 @@ namespace ConsoleAppForCSLight
 {
     class Program
     {
+        static bool isWork = true;
+        static Database dataBase = new Database(new List<Player>());
 
         static void Main(string[] args)
-        {
-            Database dataBasePlayers = new Database(new List<Player>());
-            bool isWork = true;
+        {         
             string choice;
 
             while (isWork)
@@ -23,38 +23,23 @@ namespace ConsoleAppForCSLight
                 switch (choice)
                 {
                     case "1":
-                        dataBasePlayers.ShowPlayersDB();
+                        dataBase.ShowPlayersDB();
                         break;
                     case "2":
                         Console.WriteLine("введите ник для нового игрока");
-                        dataBasePlayers.AddPlayerDB(new Player(Console.ReadLine()));
+                        dataBase.AddPlayer(new Player(Console.ReadLine()));
                         break;
                     case "3":
-                        Console.WriteLine("введите номер игрока для изменения статуса бана.");
-
-                        if (int.TryParse(Console.ReadLine(), out int result))
-                        {
-                            dataBasePlayers.BannedPlayerDB(result);
-                        }
-                        else
-                        {
-                            Console.WriteLine("ошибка ввода.");
-                        }
+                        BanUnbanOrDelete(choice);
                         break;
                     case "4":
-                        Console.WriteLine("введите номер удаляемого игрока.");
-
-                        if (int.TryParse(Console.ReadLine(), out int result2))
-                        {
-                            dataBasePlayers.DeletePlayerDB(result2);
-                        }
-                        else
-                        {
-                            Console.WriteLine("ошибка ввода.");
-                        }
+                        BanUnbanOrDelete(choice);
                         break;
                     case "5":
-                        isWork = false;
+                        BanUnbanOrDelete(choice);
+                        break;
+                    case "6":
+                        Exit();
                         break;
                     default:
                         Console.WriteLine("пункт в меню не найден");
@@ -65,10 +50,38 @@ namespace ConsoleAppForCSLight
 
         static void ShowMenu()
         {
-            Console.WriteLine("1) вывод базы. 2) добавление игрока. 3) забанить/разбанить игрока. 4) удалить игрока. 5) выйти.");
+            Console.WriteLine("1) вывод базы. 2) добавление игрока. 3) забанить игрока. 4) разбанить игрока. 5) удалить игрока. 6) выход.");
         }
 
+        static void Exit()
+        {
+            isWork = false;
+        }
 
+        static void BanUnbanOrDelete(string choice)
+        {
+            Console.WriteLine("введите номер игрока.");
+
+            if (int.TryParse(Console.ReadLine(), out int result))
+            {
+                if (choice == "3")
+                {
+                    dataBase.BanPlayer(result, true);
+                }
+                else if (choice == "4")
+                {
+                    dataBase.BanPlayer(result, false);
+                }
+                else
+                {
+                    dataBase.DeletePlayer(result);
+                }              
+            }
+            else
+            {
+                Console.WriteLine("ошибка ввода.");
+            }
+        }
     }
 
     class Player
@@ -82,27 +95,32 @@ namespace ConsoleAppForCSLight
             Nickname = nickname;
         }
 
-        public void BannedPlayer()
+        public void Ban()
         {
-            IsBanned = !IsBanned;
+            IsBanned = true;
+        }
+
+        public void Unban()
+        {
+            IsBanned = false;
         }
     }
 
     class Database
     {
-        private List<Player> DBPlayers;
+        private List<Player> _dBPlayers;
 
         public Database(List<Player> dBPlayers)
         {
-            DBPlayers = dBPlayers;
+            _dBPlayers = dBPlayers;
         }
 
         public void ShowPlayersDB()
         {
-            foreach(Player player in DBPlayers)
+            for(int i = 0; i < _dBPlayers.Count; i++)
             {
-                Console.Write((DBPlayers.IndexOf(player) + 1) + ") " + player.Nickname + ", " + player.Lvl + " lvl, ");
-                if (player.IsBanned == false)
+                Console.Write((i + 1) + ") " + _dBPlayers[i].Nickname + ", " + _dBPlayers[i].Lvl + " lvl, ");
+                if (_dBPlayers[i].IsBanned == false)
                 {
                     Console.WriteLine("не забанен.");
                 }
@@ -113,16 +131,23 @@ namespace ConsoleAppForCSLight
             }
         }
 
-        public void AddPlayerDB(Player player)
+        public void AddPlayer(Player player)
         {
-            DBPlayers.Add(player);
+            _dBPlayers.Add(player);
         }
 
-        public void BannedPlayerDB (int numberPlayer)
+        public void BanSPlayer (int numberPlayer, bool choice)
         {
-            if(numberPlayer > 0 && numberPlayer <= DBPlayers.Count)
+            if(numberPlayer > 0 && numberPlayer <= _dBPlayers.Count)
             {
-                DBPlayers[numberPlayer - 1].BannedPlayer();
+                if (choice == true)
+                {
+                    _dBPlayers[numberPlayer - 1].Ban();
+                }
+                else
+                {
+                    _dBPlayers[numberPlayer - 1].Unban();
+                }
             }
             else
             {
@@ -130,11 +155,11 @@ namespace ConsoleAppForCSLight
             }          
         }
 
-        public void DeletePlayerDB (int numberPlayer)
+        public void DeletePlayer (int numberPlayer)
         {
-            if (numberPlayer > 0 && numberPlayer <= DBPlayers.Count)
+            if (numberPlayer > 0 && numberPlayer <= _dBPlayers.Count)
             {
-                DBPlayers.RemoveAt(numberPlayer - 1);
+                _dBPlayers.RemoveAt(numberPlayer - 1);
             }
             else
             {
