@@ -26,7 +26,7 @@ namespace ConsoleAppForCSLight
                         dataBase.ShowPlayers();
                         break;
                     case "2":
-                        dataBase.AddPlayer(new Player(Console.ReadLine()));
+                        dataBase.AddPlayer();
                         break;
                     case "3":
                         dataBase.BanPlayer(GetPlayerNumber());
@@ -114,10 +114,10 @@ namespace ConsoleAppForCSLight
             }
         }
 
-        public void AddPlayer(Player player)
+        public void AddPlayer()
         {
             Console.WriteLine("введите ник для нового игрока");
-            _players.Add(player);
+            _players.Add(new Player (Console.ReadLine()));
         }
 
         public void BanPlayer (int numberPlayer)
