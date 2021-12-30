@@ -7,54 +7,90 @@ using System.Threading.Tasks;
 namespace ConsoleAppForCSLight
 {
     class Program
-    { 
+    {
+        static Player player = new Player(1000);
+        static Saller saller = new Saller();
 
         static void Main(string[] args)
-        {         
-            string choice;
+        {
             bool isWork = true;
-            Database dataBase = new Database(new List<Player>());
+            string choice;
+            
 
             while (isWork)
             {
-                ShowMenu();
+                Console.WriteLine(player.Money + " руб.");
+                Console.WriteLine("1) показать сумку. 2) купить товар 3) показать товары 4) выход");
                 choice = Console.ReadLine();
 
                 switch (choice)
                 {
                     case "1":
-                        dataBase.ShowPlayers();
+                        player.ShowBag();
                         break;
                     case "2":
-                        dataBase.AddPlayer();
+                        Console.WriteLine("выбери товар: 1) Молоко. 2) хлеб. 3) рыба. 4) икра.");
+                        Buy(Console.ReadLine());
                         break;
                     case "3":
-                        dataBase.BanPlayer(GetPlayerNumber());
+                        saller.ShowWarehouse();
                         break;
                     case "4":
-                        dataBase.UnbanPlayer(GetPlayerNumber());
-                        break;
-                    case "5":
-                        dataBase.DeletePlayer(GetPlayerNumber());
-                        break;
-                    case "6":
                         isWork = false;
                         break;
                     default:
-                        Console.WriteLine("пункт в меню не найден");
+                        Console.WriteLine("ошибка ввода");
                         break;
                 }
             }
         }
 
-        static void ShowMenu()
+        static void Buy(string choice)
         {
-            Console.WriteLine("1) вывод базы. 2) добавление игрока. 3) забанить игрока. 4) разбанить игрока. 5) удалить игрока. 6) выход.");
+            int amount;
+            switch (choice)
+            {
+                case "1":
+                    amount = GetInputAmountProduct();
+                    if (player.CheckEnoughMoney(amount, 0) && CheckProductExistence(amount, 0))
+                    {
+                        saller.DeleteProduct(amount, 0);
+                        player.AddProduct(amount, 0);
+                    }                   
+                    break;
+                case "2":
+                    amount = GetInputAmountProduct();
+                    if (player.CheckEnoughMoney(amount, 1) && CheckProductExistence(amount, 1))
+                    {                      
+                        saller.DeleteProduct(amount, 1);
+                        player.AddProduct(amount, 1);
+                    }                  
+                    break;
+                case "3":
+                    amount = GetInputAmountProduct();
+                    if (player.CheckEnoughMoney(amount, 2) && CheckProductExistence(amount, 2))
+                    {
+                        saller.DeleteProduct(amount, 2);
+                        player.AddProduct(amount, 2);
+                    }                    
+                    break;
+                case "4":
+                    amount = GetInputAmountProduct();
+                    if (player.CheckEnoughMoney(amount, 3) && CheckProductExistence(amount, 3))
+                    {
+                        saller.DeleteProduct(amount, 3);
+                        player.AddProduct(amount, 3);
+                    }                   
+                    break;
+                default:
+                    Console.WriteLine("ошибка ввода.");
+                    break;
+            }
         }
 
-        static int GetPlayerNumber()
+        static int GetInputAmountProduct()
         {
-            Console.WriteLine("введите номер игрока.");
+            Console.WriteLine("Введи количество товара.");
 
             if (int.TryParse(Console.ReadLine(), out int result))
             {
@@ -65,96 +101,112 @@ namespace ConsoleAppForCSLight
                 return -1;
             }
         }
-    }
 
-    class Player
-    {
-        public int Lvl { get; private set; } = 1;
-        public string Nickname { get; private set; }
-        public bool IsBanned { get; private set; } = false;
-
-        public Player(string nickname)
+        static bool CheckProductExistence(int amount, int choice)
         {
-            Nickname = nickname;
-        }
-
-        public void Ban()
-        {
-            IsBanned = true;
-        }
-
-        public void Unban()
-        {
-            IsBanned = false;
-        }
-    }
-
-    class Database
-    {
-        private List<Player> _players;
-
-        public Database(List<Player> players)
-        {
-            _players = players;
-        }
-
-        public void ShowPlayers()
-        {
-            for(int i = 0; i < _players.Count; i++)
+            if (amount > 0 && amount < saller.GetAmountProduct(choice))
             {
-                Console.Write((i + 1) + ") " + _players[i].Nickname + ", " + _players[i].Lvl + " lvl, ");
-                if (_players[i].IsBanned == false)
-                {
-                    Console.WriteLine("не забанен.");
-                }
-                else
-                {
-                    Console.WriteLine("забанен.");
-                }
-            }
-        }
-
-        public void AddPlayer()
-        {
-            Console.WriteLine("введите ник для нового игрока");
-            _players.Add(new Player (Console.ReadLine()));
-        }
-
-        public void BanPlayer (int numberPlayer)
-        {
-            if (CheckPlayerExistence(numberPlayer))
-            {
-                _players[numberPlayer - 1].Ban();
-            }
-        }
-
-        public void UnbanPlayer(int numberPlayer)
-        {
-            if (CheckPlayerExistence(numberPlayer))
-            {
-                _players[numberPlayer - 1].Unban();                
-            }
-        }
-
-        public bool CheckPlayerExistence(int numberPlayer)
-        {
-            if (numberPlayer > 0 && numberPlayer <= _players.Count)
-            {              
                 return true;
             }
             else
             {
-                Console.WriteLine("игрок не найден");
+                Console.WriteLine("ошибка ввода");
                 return false;
             }
         }
+    }
 
-        public void DeletePlayer (int numberPlayer)
+    class Player
+    {
+        private Dictionary<Product, int> _bag = new Dictionary<Product, int>
         {
-            if (CheckPlayerExistence(numberPlayer))
+            { new Product("молоко", 4), 0 },
+            { new Product("хлеб", 3), 0 },
+            { new Product("рыба", 14), 0 },
+            { new Product("икра", 46), 0 }
+        };
+        public int Money { get; private set; }
+
+        public Player(int money)
+        {
+            Money = money;
+        }
+
+        public void ShowBag()
+        {
+            foreach(KeyValuePair<Product, int> keyValue in _bag)
             {
-                _players.RemoveAt(numberPlayer - 1);
+                Console.WriteLine(keyValue.Key.ToString() + " - " + keyValue.Value + " шт.");
             }
+        }
+
+        public void AddProduct(int amount, int index)
+        {
+            List<Product> products = new List<Product>(_bag.Keys);
+            _bag[products[index]] += amount;
+            Money -= products[index].Price * amount;
+        }
+
+        public bool CheckEnoughMoney(int amount, int index)
+        {
+            List<Product> products = new List<Product>(_bag.Keys);
+            if (Money >= products[index].Price * amount)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+    }
+
+    class Saller
+    {
+        private Dictionary<Product, int> _warehouse = new Dictionary<Product, int>
+        {
+            { new Product("молоко", 4), 100 },
+            { new Product("хлеб", 3), 100 },
+            { new Product("рыба", 14), 50 },
+            { new Product("икра", 46), 20 }
+        };
+            
+        public void ShowWarehouse()
+        {
+            foreach (KeyValuePair<Product, int> keyValue in _warehouse)
+            {
+                Console.WriteLine(keyValue.Key.ToString() + " - " + keyValue.Value + " шт.");
+            }
+        }
+
+        public void DeleteProduct(int amount, int index)
+        {
+            List<Product> products = new List<Product>(_warehouse.Keys);
+            _warehouse[products[index]] -= amount;
+        }
+
+        public int GetAmountProduct(int choice)
+        {
+            List<Product> products = new List<Product>(_warehouse.Keys);
+            _warehouse.TryGetValue(products[choice], out int amount);
+            return amount;
+        }
+    }
+
+    class Product
+    {
+        private string _description;
+        public int Price { get; private set; }
+
+        public Product(string description, int price)
+        {
+            _description = description;
+            Price = price;
+        }
+
+        public override string ToString()
+        {
+            return $"{_description}: цена - {Price} р.";
         }
     }
 }
