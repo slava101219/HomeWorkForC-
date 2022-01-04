@@ -8,32 +8,28 @@ namespace ConsoleAppForCSLight
 {
     class Program
     {
-        static Player player = new Player(1000);
-        static Saller saller = new Saller();
-
         static void Main(string[] args)
         {
             bool isWork = true;
             string choice;
-            
+            Shop shop = new Shop();
 
             while (isWork)
             {
-                Console.WriteLine(player.Money + " руб.");
+                Console.WriteLine(shop.player.Money + " руб.");
                 Console.WriteLine("1 - показать сумку. 2 - купить товар. 3 - показать ассортимент. 4 - выход.");
                 choice = Console.ReadLine();
 
                 switch (choice)
                 {
                     case "1":
-                        player.ShowBag();
+                        shop.player.ShowBag();
                         break;
                     case "2":
-                        ShowAssortment();
-                        Buy(Console.ReadLine());
+                        shop.Buy();
                         break;
                     case "3":
-                        saller.ShowWarehouse();
+                        shop.saller.ShowWarehouse();
                         break;
                     case "4":
                         isWork = false;
@@ -45,50 +41,38 @@ namespace ConsoleAppForCSLight
             }
         }
 
-        static void Buy(string choice)
+              
+    }
+
+    class Shop
+    {
+        public Player player = new Player(1000);
+        public Saller saller = new Saller();
+        public void Buy()
         {
             int amount;
-            switch (choice)
-            {
-                case "1":
-                    amount = GetInputAmountProduct();
-                    if (player.CheckEnoughMoney(amount, 0) && CheckProductExistence(amount, 0))
-                    {
-                        saller.SalleProduct(amount, 0);
-                        player.BuyProduct(amount, 0);
-                    }                   
-                    break;
-                case "2":
-                    amount = GetInputAmountProduct();
-                    if (player.CheckEnoughMoney(amount, 1) && CheckProductExistence(amount, 1))
-                    {                      
-                        saller.SalleProduct(amount, 1);
-                        player.BuyProduct(amount, 1);
-                    }                  
-                    break;
-                case "3":
-                    amount = GetInputAmountProduct();
-                    if (player.CheckEnoughMoney(amount, 2) && CheckProductExistence(amount, 2))
-                    {
-                        saller.SalleProduct(amount, 2);
-                        player.BuyProduct(amount, 2);
-                    }                    
-                    break;
-                case "4":
-                    amount = GetInputAmountProduct();
-                    if (player.CheckEnoughMoney(amount, 3) && CheckProductExistence(amount, 3))
-                    {
-                        saller.SalleProduct(amount, 3);
-                        player.BuyProduct(amount, 3);
-                    }                   
-                    break;
-                default:
-                    Console.WriteLine("ошибка ввода.");
-                    break;
-            }
-        }
+            saller.ShowAssortment();
+            string choice = Console.ReadLine();           
 
-        static int GetInputAmountProduct()
+            if (int.TryParse(choice, out int result))
+            {
+                if(result > 0 && result < saller.GetWarehouseCount())
+                {
+                    amount = GetInputAmountProduct();
+                    if (player.CheckEnoughMoney(amount, result - 1) && CheckProductExistence(amount, result - 1))
+                    {
+                        saller.SalleProduct(amount, result - 1);
+                        player.BuyProduct(amount, result - 1);
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("ошибка ввода.");
+                }
+            }
+        } 
+
+        public int GetInputAmountProduct()
         {
             Console.WriteLine("Введи количество товара.");
 
@@ -102,7 +86,7 @@ namespace ConsoleAppForCSLight
             }
         }
 
-        static bool CheckProductExistence(int amount, int choice)
+        public bool CheckProductExistence(int amount, int choice)
         {
             if (amount > 0 && amount < saller.GetAmountProduct(choice))
             {
@@ -114,19 +98,9 @@ namespace ConsoleAppForCSLight
                 return false;
             }
         }
-
-        static void ShowAssortment()
-        {
-            List<Product> products = new List<Product>(player.GetBag().Keys);
-            Console.Write("выбери товар:");
-            for (int i = 0; i < products.Count; i++)
-            {
-                Console.Write((i + 1) + ") " + products[i].Description + ". ");
-            }
-        }
     }
 
-    class Player : IAddable
+    class Player
     {
         private Dictionary<Product, int> _bag = new Dictionary<Product, int>
         {
@@ -140,11 +114,6 @@ namespace ConsoleAppForCSLight
         public Player(int money)
         {
             Money = money;
-        }
-
-        public Dictionary<Product, int> GetBag()
-        {
-            return _bag;
         }
 
         public void ShowBag()
@@ -181,7 +150,7 @@ namespace ConsoleAppForCSLight
         }
     }
 
-    class Saller : IAddable
+    class Saller
     {
         private Dictionary<Product, int> _warehouse = new Dictionary<Product, int>
         {
@@ -216,6 +185,23 @@ namespace ConsoleAppForCSLight
         {
             _warehouse.Add(new Product(description, price), amount);
         }
+
+        public void ShowAssortment()
+        {
+            List<Product> products = new List<Product>(_warehouse.Keys);
+            Console.Write("выбери товар:");
+
+            for (int i = 0; i < products.Count; i++)
+            {
+                Console.Write((i + 1) + ") " + products[i].Description + ". ");
+            }
+            Console.WriteLine();
+        }
+
+        internal int GetWarehouseCount()
+        {
+            return _warehouse.Count;
+        }
     }
 
     class Product
@@ -233,10 +219,5 @@ namespace ConsoleAppForCSLight
         {
             return $"{Description}: цена - {Price} р.";
         }
-    }
-
-    interface IAddable
-    {
-        void AddProduct(string description, int price, int amount);
     }
 }
