@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace ConsoleAppForCSLight
@@ -10,28 +11,21 @@ namespace ConsoleAppForCSLight
     {
         static void Main(string[] args)
         {
+            Controller controller = new Controller();
             bool isWork = true;
             string choice;
-            Shop shop = new Shop();
 
             while (isWork)
             {
-                Console.WriteLine(shop.player.Money + " руб.");
-                Console.WriteLine("1 - показать сумку. 2 - купить товар. 3 - показать ассортимент. 4 - выход.");
+                ShowMenu(controller);
                 choice = Console.ReadLine();
 
                 switch (choice)
                 {
                     case "1":
-                        shop.player.ShowBag();
+                        controller.SendTrain();
                         break;
                     case "2":
-                        shop.Buy();
-                        break;
-                    case "3":
-                        shop.saller.ShowWarehouse();
-                        break;
-                    case "4":
                         isWork = false;
                         break;
                     default:
@@ -41,183 +35,118 @@ namespace ConsoleAppForCSLight
             }
         }
 
-              
+        static void ShowMenu(Controller controller)
+        {
+            Console.Clear();
+            Console.SetCursorPosition(40, 1);
+            Console.Write("Билетов куплено:" + controller.TicketsCount);
+            Console.SetCursorPosition(40, 2);
+            Console.Write("Поездов отправлено:" + controller.TrainCount);
+            Console.SetCursorPosition(40, 3);
+            Console.WriteLine("поезд в " + controller.DepartureStation + ".");
+            Console.WriteLine("1 - создать маршрут. 2 - выход.");
+        }
     }
 
-    class Shop
+    class Controller
     {
-        public Player player = new Player(1000);
-        public Saller saller = new Saller();
-        public void Buy()
-        {
-            int amount;
-            saller.ShowAssortment();
-            string choice = Console.ReadLine();           
+        DataBaseStation stationController = new DataBaseStation();
+        public int TicketsCount { get; private set; }
+        public int TrainCount { get; private set; }
+        public string DepartureStation { get; private set; } = "Moscow";
 
-            if (int.TryParse(choice, out int result))
+        public void SendTrain()
+        {
+            string destinationStation = CreateRoute();
+            CreateTrain();
+            Console.ReadKey();
+            Console.Write("из " + DepartureStation + " ");
+            for(int i = 0; i < 40; i++)
             {
-                if(result > 0 && result < saller.GetWarehouseCount())
+                Console.Write("-");
+                Thread.Sleep(100);
+            }
+            Console.Write("поезд прибыл в " + destinationStation);
+            Console.ReadKey();
+            DepartureStation = destinationStation;
+            TrainCount++;
+        }
+        public string CreateRoute()
+        {
+            Console.WriteLine("выбрать направление:");
+            stationController.ShowStations();
+            string choice = Console.ReadLine();
+            if(int.TryParse(choice, out int result))
+            {
+                if(result > 0 && result <= stationController.GetCountStations() && stationController.GetStation(result - 1) != DepartureStation)
                 {
-                    amount = GetInputAmountProduct();
-                    if (player.CheckEnoughMoney(amount, result - 1) && CheckProductExistence(amount, result - 1))
-                    {
-                        saller.SalleProduct(amount, result - 1);
-                        player.BuyProduct(amount, result - 1);
-                    }
+                    return stationController.GetStation(result - 1);
                 }
                 else
                 {
                     Console.WriteLine("ошибка ввода.");
+                    return CreateRoute();
                 }
             }
-        } 
-
-        public int GetInputAmountProduct()
-        {
-            Console.WriteLine("Введи количество товара.");
-
-            if (int.TryParse(Console.ReadLine(), out int result))
-            {
-                return result;
-            }
             else
             {
-                return -1;
+                Console.WriteLine("ошибка ввода.");
+                return CreateRoute();
             }
         }
 
-        public bool CheckProductExistence(int amount, int choice)
+        public void CreateTrain()
         {
-            if (amount > 0 && amount < saller.GetAmountProduct(choice))
-            {
-                return true;
-            }
-            else
-            {
-                Console.WriteLine("ошибка ввода");
-                return false;
-            }
+            Train train = new Train();
+            TicketsCount += train.AmountTickets;
         }
     }
 
-    class Player
+    class DataBaseStation
     {
-        private Dictionary<Product, int> _bag = new Dictionary<Product, int>
+        private List<string> _stations = new List<string>()
         {
-            { new Product("молоко", 4), 0 },
-            { new Product("хлеб", 3), 0 },
-            { new Product("рыба", 14), 0 },
-            { new Product("икра", 46), 0 }
+            "Moscow", "London", "Paris", "Stambul", "Praha"
         };
-        public int Money { get; private set; }
 
-        public Player(int money)
+        public string GetStation(int index)
         {
-            Money = money;
+            return _stations[index];
         }
 
-        public void ShowBag()
+        public void ShowStations()
         {
-            foreach(KeyValuePair<Product, int> keyValue in _bag)
+            for(int i = 0; i < _stations.Count; i++)
             {
-                Console.WriteLine(keyValue.Key.ToString() + " - " + keyValue.Value + " шт.");
-            }
-        }
-
-        public void BuyProduct(int amount, int index)
-        {
-            List<Product> products = new List<Product>(_bag.Keys);
-            _bag[products[index]] += amount;
-            Money -= products[index].Price * amount;
-        }
-
-        public bool CheckEnoughMoney(int amount, int index)
-        {
-            List<Product> products = new List<Product>(_bag.Keys);
-            if (Money >= products[index].Price * amount)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        public void AddProduct(string description, int price, int amount)
-        {
-            _bag.Add(new Product(description, price), amount);
-        }
-    }
-
-    class Saller
-    {
-        private Dictionary<Product, int> _warehouse = new Dictionary<Product, int>
-        {
-            { new Product("молоко", 4), 100 },
-            { new Product("хлеб", 3), 100 },
-            { new Product("рыба", 14), 50 },
-            { new Product("икра", 46), 20 }
-        };
-            
-        public void ShowWarehouse()
-        {
-            foreach (KeyValuePair<Product, int> keyValue in _warehouse)
-            {
-                Console.WriteLine(keyValue.Key.ToString() + " - " + keyValue.Value + " шт.");
-            }
-        }
-
-        public void SalleProduct(int amount, int index)
-        {
-            List<Product> products = new List<Product>(_warehouse.Keys);
-            _warehouse[products[index]] -= amount;
-        }
-
-        public int GetAmountProduct(int choice)
-        {
-            List<Product> products = new List<Product>(_warehouse.Keys);
-            _warehouse.TryGetValue(products[choice], out int amount);
-            return amount;
-        }
-
-        public void AddProduct(string description, int price, int amount)
-        {
-            _warehouse.Add(new Product(description, price), amount);
-        }
-
-        public void ShowAssortment()
-        {
-            List<Product> products = new List<Product>(_warehouse.Keys);
-            Console.Write("выбери товар:");
-
-            for (int i = 0; i < products.Count; i++)
-            {
-                Console.Write((i + 1) + ") " + products[i].Description + ". ");
+                Console.Write((i + 1) + ") " + _stations[i] + ". ");
             }
             Console.WriteLine();
         }
 
-        internal int GetWarehouseCount()
+        public int GetCountStations()
         {
-            return _warehouse.Count;
+            return _stations.Count;
         }
     }
 
-    class Product
+    class Train
     {
-        public string Description { get; private set; }
-        public int Price { get; private set; }
+        Random rand = new Random();
+        public int AmountTickets { get; private set; }
+        public int AmountCarriages { get; private set; }
 
-        public Product(string description, int price)
+        public Train()
         {
-            Description = description;
-            Price = price;
+            AmountTickets = rand.Next(0, 101);
+            AmountCarriages = SetCarriage(AmountTickets);
         }
 
-        public override string ToString()
+        public int SetCarriage(int tickets)
         {
-            return $"{Description}: цена - {Price} р.";
+            int carriage = tickets / 30 + 1;
+            Console.WriteLine("Билетов куплено: " + tickets);
+            Console.WriteLine("в вагоне 30 мест. Мы добавим " + carriage + " вагонов, для " + tickets + " человек.");
+            return carriage;
         }
     }
-}
+}    
