@@ -50,7 +50,7 @@ namespace ConsoleAppForCSLight
 
     class Controller
     {
-        DataBaseStation stationController = new DataBaseStation();
+        private DataBaseStation _stationController = new DataBaseStation();
         public int TicketsCount { get; private set; }
         public int TrainCount { get; private set; }
         public string DepartureStation { get; private set; } = "Moscow";
@@ -61,11 +61,14 @@ namespace ConsoleAppForCSLight
             CreateTrain();
             Console.ReadKey();
             Console.Write("из " + DepartureStation + " ");
-            for(int i = 0; i < 40; i++)
+            int barLoadingLenght = 40;
+
+            for(int i = 0; i < barLoadingLenght; i++)
             {
                 Console.Write("-");
                 Thread.Sleep(100);
             }
+
             Console.Write("поезд прибыл в " + destinationStation);
             Console.ReadKey();
             DepartureStation = destinationStation;
@@ -74,13 +77,14 @@ namespace ConsoleAppForCSLight
         public string CreateRoute()
         {
             Console.WriteLine("выбрать направление:");
-            stationController.ShowStations();
+            _stationController.ShowStations();
             string choice = Console.ReadLine();
+
             if(int.TryParse(choice, out int result))
             {
-                if(result > 0 && result <= stationController.GetCountStations() && stationController.GetStation(result - 1) != DepartureStation)
+                if(result > 0 && result <= _stationController.GetCountStations() && _stationController.GetStation(result - 1) != DepartureStation)
                 {
-                    return stationController.GetStation(result - 1);
+                    return _stationController.GetStation(result - 1);
                 }
                 else
                 {
@@ -131,22 +135,24 @@ namespace ConsoleAppForCSLight
 
     class Train
     {
-        Random rand = new Random();
+        private Random _random = new Random();
         public int AmountTickets { get; private set; }
         public int AmountCarriages { get; private set; }
 
         public Train()
         {
-            AmountTickets = rand.Next(0, 101);
+            int maxTickets = 101;
+            AmountTickets = _random.Next(0, maxTickets);
             AmountCarriages = SetCarriage(AmountTickets);
         }
 
         public int SetCarriage(int tickets)
         {
-            int carriage = tickets / 30 + 1;
+            int carriageXapacity = 30;
+            int carriages = tickets / carriageXapacity + 1;
             Console.WriteLine("Билетов куплено: " + tickets);
-            Console.WriteLine("в вагоне 30 мест. Мы добавим " + carriage + " вагонов, для " + tickets + " человек.");
-            return carriage;
+            Console.WriteLine("в вагоне 30 мест. Мы добавим " + carriages + " вагонов, для " + tickets + " человек.");
+            return carriages;
         }
     }
 }    
