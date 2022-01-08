@@ -17,13 +17,13 @@ namespace ConsoleAppForCSLight
 
             while (isWork)
             {
-                ShowMenu(controller);
+                ShowMenu();
                 choice = Console.ReadLine();
 
                 switch (choice)
                 {
                     case "1":
-                        controller.SendTrain();
+                        controller.Fight(controller.ChoiceFighter(), controller.ChoiceFighter());
                         break;
                     case "2":
                         isWork = false;
@@ -35,124 +35,228 @@ namespace ConsoleAppForCSLight
             }
         }
 
-        static void ShowMenu(Controller controller)
+        static void ShowMenu()
         {
-            Console.Clear();
-            Console.SetCursorPosition(40, 1);
-            Console.Write("Билетов куплено:" + controller.TicketsCount);
-            Console.SetCursorPosition(40, 2);
-            Console.Write("Поездов отправлено:" + controller.TrainCount);
-            Console.SetCursorPosition(40, 3);
-            Console.WriteLine("поезд в " + controller.DepartureStation + ".");
-            Console.WriteLine("1 - создать маршрут. 2 - выход.");
+            Console.WriteLine("1) сражение. 2) выход");
         }
     }
 
     class Controller
     {
-        private DataBaseStation _stationController = new DataBaseStation();
-        public int TicketsCount { get; private set; }
-        public int TrainCount { get; private set; }
-        public string DepartureStation { get; private set; } = "Moscow";
-
-        public void SendTrain()
+        public void Fight(Fighter fighter1, Fighter fighter2)
         {
-            string destinationStation = CreateRoute();
-            CreateTrain();
-            Console.ReadKey();
-            Console.Write("из " + DepartureStation + " ");
-            int barLoadingLenght = 40;
-
-            for(int i = 0; i < barLoadingLenght; i++)
+            while(fighter1.Health > 0 && fighter2.Health > 0)
             {
-                Console.Write("-");
-                Thread.Sleep(100);
+                fighter1.ReceiveDamage(fighter2.GiveDamage());
+
+                if (fighter1.Health > 0)
+                {
+                    fighter2.ReceiveDamage(fighter1.GiveDamage());
+                }
             }
 
-            Console.Write("поезд прибыл в " + destinationStation);
-            Console.ReadKey();
-            DepartureStation = destinationStation;
-            TrainCount++;
-        }
-        public string CreateRoute()
-        {
-            Console.WriteLine("выбрать направление:");
-            _stationController.ShowStations();
-            string choice = Console.ReadLine();
-
-            if(int.TryParse(choice, out int result))
+            if(fighter1.Health <= 0)
             {
-                if(result > 0 && result <= _stationController.GetCountStations() && _stationController.GetStation(result - 1) != DepartureStation)
-                {
-                    return _stationController.GetStation(result - 1);
-                }
-                else
-                {
-                    Console.WriteLine("ошибка ввода.");
-                    return CreateRoute();
-                }
+                Console.WriteLine("победил игрок 2 : " + fighter2.Name);
             }
             else
             {
-                Console.WriteLine("ошибка ввода.");
-                return CreateRoute();
+                Console.WriteLine("победил игрок 1 : " + fighter1.Name);
             }
+            
         }
 
-        public void CreateTrain()
+        public Fighter ChoiceFighter()
         {
-            Train train = new Train();
-            TicketsCount += train.AmountTickets;
-        }
-    }
+            Console.WriteLine("выбери бойца.");
+            Console.WriteLine("1) маг. 2) рыцарь. 3) ассасин. 4) зверь. 5) призрак.");
+            string choice = Console.ReadLine();
 
-    class DataBaseStation
-    {
-        private List<string> _stations = new List<string>()
-        {
-            "Moscow", "London", "Paris", "Stambul", "Praha"
-        };
-
-        public string GetStation(int index)
-        {
-            return _stations[index];
-        }
-
-        public void ShowStations()
-        {
-            for(int i = 0; i < _stations.Count; i++)
+            switch (choice)
             {
-                Console.Write((i + 1) + ") " + _stations[i] + ". ");
+                case "1":
+                    return new Wizard();
+                case "2":
+                    return new Knight();
+                case "3":
+                    return new Assasin();
+                case "4":
+                    return new Beast();
+                case "5":
+                    return new Ghost();
+                default:
+                    return ChoiceFighter();
             }
-            Console.WriteLine();
-        }
-
-        public int GetCountStations()
-        {
-            return _stations.Count;
         }
     }
 
-    class Train
+    class Fighter 
     {
-        private Random _random = new Random();
-        public int AmountTickets { get; private set; }
-        public int AmountCarriages { get; private set; }
+        public int Health { get; protected set; }
+        protected int Attack;
+        protected int Defense;
+        public string Name { get; protected set; }
 
-        public Train()
+        protected Random random = new Random();
+
+        public Fighter(int health, int attack, int defense, string name)
         {
-            int maxTickets = 101;
-            AmountTickets = _random.Next(0, maxTickets);
-            AmountCarriages = SetCarriage(AmountTickets);
+            Health = health;
+            Attack = attack;
+            Defense = defense;
+            Name = name;
         }
 
-        public int SetCarriage(int tickets)
+        public virtual int GiveDamage()
         {
-            int carriageXapacity = 30;
-            int carriages = tickets / carriageXapacity + 1;
-            Console.WriteLine("Билетов куплено: " + tickets);
-            Console.WriteLine("в вагоне 30 мест. Мы добавим " + carriages + " вагонов, для " + tickets + " человек.");
-            return carriages;
+            return Attack;
+        }
+
+        public virtual void ReceiveDamage(int damage)
+        {
         }
     }
-}    
+
+    class Wizard : Fighter
+    {
+        public Wizard() : base(500, 100, 35, "маг")
+        {
+        }
+
+        public override int GiveDamage()
+        {
+            Console.WriteLine("маг бъет.");
+            return Attack;
+        }
+
+        public override void ReceiveDamage(int damage)
+        {
+            if(random.Next(0,2) == 0)
+            {
+                Console.WriteLine("маг блокирует урон.");
+            }
+            else
+            {
+                double lossHealth = (double)damage / (double)Defense * (double)damage;
+                Health -= (int)lossHealth;
+                Console.WriteLine("маг получил " + (int)lossHealth + "урона. Осталось " + Health + " здоровья");
+            }
+        }
+    }
+
+    class Knight : Fighter
+    {
+        private int coeffDefence = 2;
+        public Knight() : base(1000, 50, 70, "рыцарь")
+        {
+        }
+
+        public override int GiveDamage()
+        {
+            Console.WriteLine("рыцарь бъет.");
+            return Attack;
+        }
+
+        public override void ReceiveDamage(int damage)
+        {
+            if (random.Next(0, 2) == 0)
+            {
+
+                double lossHealth = (double)damage / (double)Defense * (double)damage/(double)coeffDefence;
+                Health -= (int)lossHealth;
+                Console.WriteLine("рыцарь блокировал часть урона. рыцарь получил " + (int)lossHealth + "урона. Осталось " + Health + " здоровья");
+            }
+            else
+            {
+                double lossHealth = (double)damage / (double)Defense * (double)damage;
+                Health -= (int)lossHealth;
+                Console.WriteLine("рыцарь получил " + (int)lossHealth + "урона. Осталось " + Health + " здоровья");
+            }
+        }
+    }
+
+    class Assasin : Fighter
+    {
+        private int corffAttack = 2;
+        public Assasin() : base(650, 80, 40, "убийца")
+        {
+        }
+
+        public override int GiveDamage()
+        {
+            if(random.Next(0,2) == 0)
+            {
+                Console.Write("Убийца бъет в спину.");
+                return Attack * corffAttack;
+            }
+            else
+            {
+                Console.WriteLine("убийца бъет.");
+                return Attack;
+            }           
+        }
+
+        public override void ReceiveDamage(int damage)
+        {
+            if (random.Next(0, 4) > 2)
+            {
+                Console.WriteLine("убийца увернулся.");
+            }
+            else
+            {
+                double lossHealth = (double)damage / (double)Defense * (double)damage;
+                Health -= (int)lossHealth;
+                Console.WriteLine("убийца получил " + (int)lossHealth + "урона. Осталось " + Health + " здоровья");
+            }
+        }
+    }
+
+    class Beast : Fighter
+    {
+        private int coeffAttack = 3;
+
+        public Beast() : base(1200, 35, 30, "зверь")
+        {
+        }
+
+        public override int GiveDamage()
+        {
+            Console.WriteLine("зверь бъет.");
+            return Attack * coeffAttack;
+        }
+
+        public override void ReceiveDamage(int damage)
+        {
+            double lossHealth = (double)damage / (double)Defense * (double)damage;
+            Health -= (int)lossHealth;
+            Console.WriteLine("зверь получил " + (int)lossHealth + "урона. Осталось " + Health + " здоровья");
+        }
+    }
+
+    class Ghost : Fighter
+    {
+        public Ghost() : base(400, 140, 10, "призрак")
+        {
+        }
+
+        public override int GiveDamage()
+        {
+            Console.WriteLine("призрак бъет.");
+            return Attack;
+        }
+
+        public override void ReceiveDamage(int damage)
+        {
+            if (random.Next(0, 4) > 0)
+            {
+                Console.WriteLine("призрак увернулся.");
+            }
+            else
+            {
+                double lossHealth = (double)damage / (double)Defense * (double)damage;
+                Health -= (int)lossHealth;
+                Console.WriteLine("призрак получил " + (int)lossHealth + "урона. Осталось " + Health + " здоровья");
+            }
+        }
+    }
+}
