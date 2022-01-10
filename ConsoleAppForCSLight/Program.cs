@@ -43,6 +43,8 @@ namespace ConsoleAppForCSLight
 
     class Controller
     {
+        private List<Fighter> _fiters = new List<Fighter> { new Wizard(), new Knight(), new Assasin(), new Beast(), new Ghost() };
+
         public void Fight(Fighter fighter1, Fighter fighter2)
         {
             while(fighter1.Health > 0 && fighter2.Health > 0)
@@ -69,7 +71,11 @@ namespace ConsoleAppForCSLight
         public Fighter ChoiceFighter()
         {
             Console.WriteLine("выбери бойца.");
-            Console.WriteLine("1) маг. 2) рыцарь. 3) ассасин. 4) зверь. 5) призрак.");
+            for(int i = 0; i < _fiters.Count; i++)
+            {
+                Console.Write(i + ") " + _fiters[i].Name + ". ");
+            }
+            Console.WriteLine();
             string choice = Console.ReadLine();
 
             switch (choice)
@@ -97,7 +103,7 @@ namespace ConsoleAppForCSLight
         protected int Defense;
         public string Name { get; protected set; }
 
-        protected Random random = new Random();
+        protected Random Random = new Random();
 
         public Fighter(int health, int attack, int defense, string name)
         {
@@ -119,6 +125,7 @@ namespace ConsoleAppForCSLight
 
     class Wizard : Fighter
     {
+        private int _chanceBlockDamage = 50;
         public Wizard() : base(500, 100, 35, "маг")
         {
         }
@@ -131,7 +138,7 @@ namespace ConsoleAppForCSLight
 
         public override void ReceiveDamage(int damage)
         {
-            if(random.Next(0,2) == 0)
+            if(Random.Next(0,100) > _chanceBlockDamage)
             {
                 Console.WriteLine("маг блокирует урон.");
             }
@@ -146,7 +153,8 @@ namespace ConsoleAppForCSLight
 
     class Knight : Fighter
     {
-        private int coeffDefence = 2;
+        private int _chanceBlockDamage = 50;
+        private int _coeffDefence = 2;
         public Knight() : base(1000, 50, 70, "рыцарь")
         {
         }
@@ -159,10 +167,10 @@ namespace ConsoleAppForCSLight
 
         public override void ReceiveDamage(int damage)
         {
-            if (random.Next(0, 2) == 0)
+            if (Random.Next(0, 100) > _chanceBlockDamage)
             {
 
-                double lossHealth = (double)damage / (double)Defense * (double)damage/(double)coeffDefence;
+                double lossHealth = (double)damage / (double)Defense * (double)damage/(double)_coeffDefence;
                 Health -= (int)lossHealth;
                 Console.WriteLine("рыцарь блокировал часть урона. рыцарь получил " + (int)lossHealth + "урона. Осталось " + Health + " здоровья");
             }
@@ -177,17 +185,19 @@ namespace ConsoleAppForCSLight
 
     class Assasin : Fighter
     {
-        private int corffAttack = 2;
+        private int _coeffAttack = 2;
+        private int _chanceMiss = 25;
+        private int _chanceCritAttack = 50;
         public Assasin() : base(650, 80, 40, "убийца")
         {
         }
 
         public override int GiveDamage()
         {
-            if(random.Next(0,2) == 0)
+            if(Random.Next(0,100) > _chanceCritAttack)
             {
                 Console.Write("Убийца бъет в спину.");
-                return Attack * corffAttack;
+                return Attack * _coeffAttack;
             }
             else
             {
@@ -198,7 +208,7 @@ namespace ConsoleAppForCSLight
 
         public override void ReceiveDamage(int damage)
         {
-            if (random.Next(0, 4) > 2)
+            if (Random.Next(0, 100) < _chanceMiss)
             {
                 Console.WriteLine("убийца увернулся.");
             }
@@ -213,7 +223,7 @@ namespace ConsoleAppForCSLight
 
     class Beast : Fighter
     {
-        private int coeffAttack = 3;
+        private int _coeffAttack = 3;
 
         public Beast() : base(1200, 35, 30, "зверь")
         {
@@ -222,7 +232,7 @@ namespace ConsoleAppForCSLight
         public override int GiveDamage()
         {
             Console.WriteLine("зверь бъет.");
-            return Attack * coeffAttack;
+            return Attack * _coeffAttack;
         }
 
         public override void ReceiveDamage(int damage)
@@ -235,6 +245,7 @@ namespace ConsoleAppForCSLight
 
     class Ghost : Fighter
     {
+        private int _chanceMiss = 75;
         public Ghost() : base(400, 140, 10, "призрак")
         {
         }
@@ -247,7 +258,7 @@ namespace ConsoleAppForCSLight
 
         public override void ReceiveDamage(int damage)
         {
-            if (random.Next(0, 4) > 0)
+            if (Random.Next(0, 100) < _chanceMiss)
             {
                 Console.WriteLine("призрак увернулся.");
             }
