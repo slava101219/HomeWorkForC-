@@ -11,7 +11,7 @@ namespace ConsoleAppForCSLight
     {
         static void Main(string[] args)
         {
-            Controller controller = new Controller();
+            Arena arena = new Arena();
             bool isWork = true;
             string choice;
 
@@ -23,7 +23,7 @@ namespace ConsoleAppForCSLight
                 switch (choice)
                 {
                     case "1":
-                        controller.Fight(controller.ChoiceFighter(), controller.ChoiceFighter());
+                        arena.Fight(arena.ChoiceFighter(), arena.ChoiceFighter());
                         break;
                     case "2":
                         isWork = false;
@@ -41,7 +41,7 @@ namespace ConsoleAppForCSLight
         }
     }
 
-    class Controller
+    class Arena
     {
         private List<Fighter> _fiters = new List<Fighter> { new Wizard(), new Knight(), new Assasin(), new Beast(), new Ghost() };
 
@@ -71,10 +71,12 @@ namespace ConsoleAppForCSLight
         public Fighter ChoiceFighter()
         {
             Console.WriteLine("выбери бойца.");
+
             for(int i = 0; i < _fiters.Count; i++)
             {
                 Console.Write(i + ") " + _fiters[i].Name + ". ");
             }
+
             Console.WriteLine();
             string choice = Console.ReadLine();
 
@@ -98,11 +100,10 @@ namespace ConsoleAppForCSLight
 
     class Fighter 
     {
-        public int Health { get; protected set; }
         protected int Attack;
         protected int Defense;
+        public int Health { get; protected set; }
         public string Name { get; protected set; }
-
         protected Random Random = new Random();
 
         public Fighter(int health, int attack, int defense, string name)
