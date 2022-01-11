@@ -43,8 +43,6 @@ namespace ConsoleAppForCSLight
 
     class Arena
     {
-        private List<Fighter> _fiters = new List<Fighter> { new Wizard(), new Knight(), new Assasin(), new Beast(), new Ghost() };
-
         public void Fight(Fighter fighter1, Fighter fighter2)
         {
             while(fighter1.Health > 0 && fighter2.Health > 0)
@@ -70,30 +68,31 @@ namespace ConsoleAppForCSLight
 
         public Fighter ChoiceFighter()
         {
+            List<Fighter> fighters = new List<Fighter> { new Wizard(), new Knight(), new Assasin(), new Beast(), new Ghost() };
             Console.WriteLine("выбери бойца.");
 
-            for(int i = 0; i < _fiters.Count; i++)
+            for(int i = 0; i < fighters.Count; i++)
             {
-                Console.Write(i + ") " + _fiters[i].Name + ". ");
+                Console.Write((i + 1) + ") " + fighters[i].Name + ". ");
             }
 
             Console.WriteLine();
             string choice = Console.ReadLine();
 
-            switch (choice)
+            if(int.TryParse(choice, out int result))
             {
-                case "1":
-                    return new Wizard();
-                case "2":
-                    return new Knight();
-                case "3":
-                    return new Assasin();
-                case "4":
-                    return new Beast();
-                case "5":
-                    return new Ghost();
-                default:
+                if(result > 0 || result < fighters.Count + 1)
+                {
+                    return fighters[result - 1];
+                }
+                else
+                {
                     return ChoiceFighter();
+                }
+            }
+            else
+            {
+                return ChoiceFighter();
             }
         }
     }
@@ -102,9 +101,11 @@ namespace ConsoleAppForCSLight
     {
         protected int Attack;
         protected int Defense;
+        protected Random Random = new Random();
+        protected int MinChance = 0;
+        protected int MaxChance = 100;
         public int Health { get; protected set; }
         public string Name { get; protected set; }
-        protected Random Random = new Random();
 
         public Fighter(int health, int attack, int defense, string name)
         {
@@ -139,7 +140,7 @@ namespace ConsoleAppForCSLight
 
         public override void ReceiveDamage(int damage)
         {
-            if(Random.Next(0,100) > _chanceBlockDamage)
+            if(Random.Next(MinChance,MaxChance) > _chanceBlockDamage)
             {
                 Console.WriteLine("маг блокирует урон.");
             }
@@ -168,7 +169,7 @@ namespace ConsoleAppForCSLight
 
         public override void ReceiveDamage(int damage)
         {
-            if (Random.Next(0, 100) > _chanceBlockDamage)
+            if (Random.Next(MinChance, MaxChance) > _chanceBlockDamage)
             {
 
                 double lossHealth = (double)damage / (double)Defense * (double)damage/(double)_coeffDefence;
@@ -195,7 +196,7 @@ namespace ConsoleAppForCSLight
 
         public override int GiveDamage()
         {
-            if(Random.Next(0,100) > _chanceCritAttack)
+            if(Random.Next(MinChance, MaxChance) > _chanceCritAttack)
             {
                 Console.Write("Убийца бъет в спину.");
                 return Attack * _coeffAttack;
@@ -209,7 +210,7 @@ namespace ConsoleAppForCSLight
 
         public override void ReceiveDamage(int damage)
         {
-            if (Random.Next(0, 100) < _chanceMiss)
+            if (Random.Next(MinChance, MaxChance) < _chanceMiss)
             {
                 Console.WriteLine("убийца увернулся.");
             }
@@ -259,7 +260,7 @@ namespace ConsoleAppForCSLight
 
         public override void ReceiveDamage(int damage)
         {
-            if (Random.Next(0, 100) < _chanceMiss)
+            if (Random.Next(MinChance, MaxChance) < _chanceMiss)
             {
                 Console.WriteLine("призрак увернулся.");
             }
