@@ -11,265 +11,154 @@ namespace ConsoleAppForCSLight
     {
         static void Main(string[] args)
         {
-            Arena arena = new Arena();
-            bool isWork = true;
-            string choice;
-
-            while (isWork)
-            {
-                ShowMenu();
-                choice = Console.ReadLine();
-
-                switch (choice)
-                {
-                    case "1":
-                        arena.Fight(arena.ChoiceFighter(), arena.ChoiceFighter());
-                        break;
-                    case "2":
-                        isWork = false;
-                        break;
-                    default:
-                        Console.WriteLine("ошибка ввода");
-                        break;
-                }
-            }
-        }
-
-        static void ShowMenu()
-        {
-            Console.WriteLine("1) сражение. 2) выход");
+            Shop shop = new Shop();
+            shop.CreateCustomers();
+            shop.AcceptCustomers();
         }
     }
 
-    class Arena
+    class Shop
     {
-        public void Fight(Fighter fighter1, Fighter fighter2)
+        private List<Product> _products = new List<Product> {new Milk(), new Curd(), new Mayonnaise(), new SourCream(), new Kefir()};
+        private Queue<Customer> _customers = new Queue<Customer>();
+        private int _maxCustomerCount = 10;
+        private Random _random = new Random();
+
+        public void CreateCustomers()
         {
-            while(fighter1.Health > 0 && fighter2.Health > 0)
-            {
-                fighter1.ReceiveDamage(fighter2.GiveDamage());
+            int customerCount = _random.Next(0, _maxCustomerCount);
+            Console.WriteLine("кажется мы забыли повесить ценники.. хорошо клиентов сегодня будет не много," + "всего то " + customerCount +
+                ", веть никто из них не знает, хватит ли у него денег.");
 
-                if (fighter1.Health > 0)
-                {
-                    fighter2.ReceiveDamage(fighter1.GiveDamage());
-                }
+            for (int i = 0; i < customerCount; i++)
+            {
+                _customers.Enqueue(new Customer());
             }
+        }
+        public void AcceptCustomers()
+        {
+            foreach(Customer customer in _customers)
+            {
+                Console.WriteLine("у клиента " + customer.Momey + " денег. вот что ему нужно.");                
+                customer.AddProductsToBasket(_products);
+                customer.ShowBasket();
+                customer.DeleteProduct();
+                Console.WriteLine("наконец то у него хватило денег! вот что он купил.");
+                customer.ShowBasket();
+            }
+            Console.WriteLine("все на сегодня!");
+        }
+    }
+    class Customer
+    {
+        private List<Product> _basketOfProduct = new List<Product>();
+        private int _minMoney = 10;
+        private int _maxMoney = 50;
+        private int _minProductCount = 5;
+        private int _maxProductCount = 20;
+        private Random _random = new Random();
+        public int Momey { get; private set; }
 
-            if(fighter1.Health <= 0)
-            {
-                Console.WriteLine("победил игрок 2 : " + fighter2.Name);
-            }
-            else
-            {
-                Console.WriteLine("победил игрок 1 : " + fighter1.Name);
-            }
-            
+        public Customer()
+        {
+            Momey = _random.Next(_minMoney, _maxMoney);
         }
 
-        public Fighter ChoiceFighter()
+        public void AddProductsToBasket(List<Product> productsShop)
         {
-            List<Fighter> fighters = new List<Fighter> { new Wizard(), new Knight(), new Assasin(), new Beast(), new Ghost() };
-            Console.WriteLine("выбери бойца.");
-
-            for(int i = 0; i < fighters.Count; i++)
+            for (int _productCount = _random.Next(_minProductCount, _maxProductCount); _productCount > 0; _productCount--)
             {
-                Console.Write((i + 1) + ") " + fighters[i].Name + ". ");
+                _basketOfProduct.Add(productsShop[_random.Next(0, productsShop.Count - 1)]);
+            }
+        }
+
+        public void ShowBasket()
+        {
+            Console.WriteLine("------------------------------");
+            foreach(Product product in _basketOfProduct)
+            {
+                Console.WriteLine(product.Name);
+            }
+            Console.WriteLine("------------------------------");
+        }
+
+        public bool CheckMoneyEnough()
+        {
+            int needMoney = 0;
+
+            foreach (Product product in _basketOfProduct)
+            {
+                needMoney += product.price;
             }
 
-            Console.WriteLine();
-            string choice = Console.ReadLine();
-
-            if(int.TryParse(choice, out int result))
+            if (needMoney <= Momey)
             {
-                if(result > 0 || result < fighters.Count + 1)
-                {
-                    return fighters[result - 1];
-                }
-                else
-                {
-                    return ChoiceFighter();
-                }
+                return true;
             }
             else
             {
-                return ChoiceFighter();
+                Console.WriteLine("мне нужно " + needMoney + ", а у меня только " + Momey);
+                return false;
+            }
+        }
+
+        public void DeleteProduct()
+        {
+            int indexDeleteProduct = _random.Next(1, _basketOfProduct.Count) - 1;
+            while (!CheckMoneyEnough())
+            {
+                Console.WriteLine(indexDeleteProduct);
+                Console.WriteLine("выложил " + _basketOfProduct[indexDeleteProduct].Name + " :( это ");
+                _basketOfProduct.RemoveAt(indexDeleteProduct);
+                
+                Console.ReadKey();
             }
         }
     }
 
-    class Fighter 
+    class Product 
     {
-        protected int Attack;
-        protected int Defense;
-        protected Random Random = new Random();
-        protected int MinChance = 0;
-        protected int MaxChance = 100;
-        public int Health { get; protected set; }
         public string Name { get; protected set; }
+        public int price { get; protected set; }
 
-        public Fighter(int health, int attack, int defense, string name)
+        public Product(string name, int price)
         {
-            Health = health;
-            Attack = attack;
-            Defense = defense;
             Name = name;
+            this.price = price;
         }
+    }
 
-        public virtual int GiveDamage()
-        {
-            return Attack;
-        }
-
-        public virtual void ReceiveDamage(int damage)
+    class Milk : Product
+    {
+        public Milk() : base ("молоко", 1)
         {
         }
     }
 
-    class Wizard : Fighter
+    class Curd : Product
     {
-        private int _chanceBlockDamage = 50;
-        public Wizard() : base(500, 100, 35, "маг")
+        public Curd() : base("творог", 4)
         {
         }
-
-        public override int GiveDamage()
+    }
+    class Mayonnaise : Product
+    {
+        public Mayonnaise() : base("майонез", 6)
         {
-            Console.WriteLine("маг бъет.");
-            return Attack;
-        }
-
-        public override void ReceiveDamage(int damage)
-        {
-            if(Random.Next(MinChance,MaxChance) > _chanceBlockDamage)
-            {
-                Console.WriteLine("маг блокирует урон.");
-            }
-            else
-            {
-                double lossHealth = (double)damage / (double)Defense * (double)damage;
-                Health -= (int)lossHealth;
-                Console.WriteLine("маг получил " + (int)lossHealth + "урона. Осталось " + Health + " здоровья");
-            }
         }
     }
 
-    class Knight : Fighter
+    class SourCream : Product
     {
-        private int _chanceBlockDamage = 50;
-        private int _coeffDefence = 2;
-        public Knight() : base(1000, 50, 70, "рыцарь")
+        public SourCream() : base("сметана", 5)
         {
-        }
-
-        public override int GiveDamage()
-        {
-            Console.WriteLine("рыцарь бъет.");
-            return Attack;
-        }
-
-        public override void ReceiveDamage(int damage)
-        {
-            if (Random.Next(MinChance, MaxChance) > _chanceBlockDamage)
-            {
-
-                double lossHealth = (double)damage / (double)Defense * (double)damage/(double)_coeffDefence;
-                Health -= (int)lossHealth;
-                Console.WriteLine("рыцарь блокировал часть урона. рыцарь получил " + (int)lossHealth + "урона. Осталось " + Health + " здоровья");
-            }
-            else
-            {
-                double lossHealth = (double)damage / (double)Defense * (double)damage;
-                Health -= (int)lossHealth;
-                Console.WriteLine("рыцарь получил " + (int)lossHealth + "урона. Осталось " + Health + " здоровья");
-            }
         }
     }
 
-    class Assasin : Fighter
+    class Kefir : Product
     {
-        private int _coeffAttack = 2;
-        private int _chanceMiss = 25;
-        private int _chanceCritAttack = 50;
-        public Assasin() : base(650, 80, 40, "убийца")
+        public Kefir() : base("кефир", 2)
         {
-        }
-
-        public override int GiveDamage()
-        {
-            if(Random.Next(MinChance, MaxChance) > _chanceCritAttack)
-            {
-                Console.Write("Убийца бъет в спину.");
-                return Attack * _coeffAttack;
-            }
-            else
-            {
-                Console.WriteLine("убийца бъет.");
-                return Attack;
-            }           
-        }
-
-        public override void ReceiveDamage(int damage)
-        {
-            if (Random.Next(MinChance, MaxChance) < _chanceMiss)
-            {
-                Console.WriteLine("убийца увернулся.");
-            }
-            else
-            {
-                double lossHealth = (double)damage / (double)Defense * (double)damage;
-                Health -= (int)lossHealth;
-                Console.WriteLine("убийца получил " + (int)lossHealth + "урона. Осталось " + Health + " здоровья");
-            }
-        }
-    }
-
-    class Beast : Fighter
-    {
-        private int _coeffAttack = 3;
-
-        public Beast() : base(1200, 35, 30, "зверь")
-        {
-        }
-
-        public override int GiveDamage()
-        {
-            Console.WriteLine("зверь бъет.");
-            return Attack * _coeffAttack;
-        }
-
-        public override void ReceiveDamage(int damage)
-        {
-            double lossHealth = (double)damage / (double)Defense * (double)damage;
-            Health -= (int)lossHealth;
-            Console.WriteLine("зверь получил " + (int)lossHealth + "урона. Осталось " + Health + " здоровья");
-        }
-    }
-
-    class Ghost : Fighter
-    {
-        private int _chanceMiss = 75;
-        public Ghost() : base(400, 140, 10, "призрак")
-        {
-        }
-
-        public override int GiveDamage()
-        {
-            Console.WriteLine("призрак бъет.");
-            return Attack;
-        }
-
-        public override void ReceiveDamage(int damage)
-        {
-            if (Random.Next(MinChance, MaxChance) < _chanceMiss)
-            {
-                Console.WriteLine("призрак увернулся.");
-            }
-            else
-            {
-                double lossHealth = (double)damage / (double)Defense * (double)damage;
-                Health -= (int)lossHealth;
-                Console.WriteLine("призрак получил " + (int)lossHealth + "урона. Осталось " + Health + " здоровья");
-            }
         }
     }
 }
