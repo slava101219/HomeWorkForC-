@@ -33,6 +33,7 @@ namespace ConsoleAppForCSLight
             for (int i = 0; i < customerCount; i++)
             {
                 _customers.Enqueue(new Customer());
+                Thread.Sleep(100);
             }
         }
         public void AcceptCustomers()
@@ -104,11 +105,11 @@ namespace ConsoleAppForCSLight
 
         public void DeleteProduct()
         {
-            int indexDeleteProduct = _random.Next(1, _basketOfProduct.Count) - 1;
+            
             while (!CheckMoneyEnough())
             {
-                Console.WriteLine(indexDeleteProduct);
-                Console.WriteLine("выложил " + _basketOfProduct[indexDeleteProduct].Name + " :( это ");
+                int indexDeleteProduct = _random.Next(1, _basketOfProduct.Count) - 1;
+                Console.WriteLine("выложил " + _basketOfProduct[indexDeleteProduct].Name + " :(");
                 _basketOfProduct.RemoveAt(indexDeleteProduct);
                 
                 Console.ReadKey();
