@@ -76,10 +76,12 @@ namespace ConsoleAppForCSLight
         public void ShowBasket()
         {
             Console.WriteLine("------------------------------");
+
             foreach(Product product in _basketOfProduct)
             {
                 Console.WriteLine(product.Name);
             }
+
             Console.WriteLine("------------------------------");
         }
 
