@@ -19,7 +19,8 @@ namespace ConsoleAppForCSLight
 
     class Shop
     {
-        private List<Product> _products = new List<Product> {new Milk(), new Curd(), new Mayonnaise(), new SourCream(), new Kefir()};
+        private IReadOnlyList<Product> _products = new List<Product> 
+        {new Product("молоко", 1), new Product("сыр", 6), new Product("майонез", 4), new Product("сметана", 3), new Product("кефир", 2)};
         private Queue<Customer> _customers = new Queue<Customer>();
         private int _maxCustomerCount = 10;
         private Random _random = new Random();
@@ -40,7 +41,7 @@ namespace ConsoleAppForCSLight
         {
             foreach(Customer customer in _customers)
             {
-                Console.WriteLine("у клиента " + customer.Momey + " денег. вот что ему нужно.");                
+                Console.WriteLine("у клиента " + customer.Money + " денег. вот что ему нужно.");                
                 customer.AddProductsToBasket(_products);
                 customer.ShowBasket();
                 customer.DeleteProduct();
@@ -52,21 +53,22 @@ namespace ConsoleAppForCSLight
     }
     class Customer
     {
-        private List<Product> _basketOfProduct = new List<Product>();
-        private int _minMoney = 10;
-        private int _maxMoney = 50;
-        private int _minProductCount = 5;
-        private int _maxProductCount = 20;
+        private List<Product> _basketOfProduct = new List<Product>(); 
         private Random _random = new Random();
-        public int Momey { get; private set; }
+        public int Money { get; private set; }
 
         public Customer()
         {
-            Momey = _random.Next(_minMoney, _maxMoney);
+            int _minMoney = 10;
+            int _maxMoney = 50;
+            Money = _random.Next(_minMoney, _maxMoney);
         }
 
-        public void AddProductsToBasket(List<Product> productsShop)
+        public void AddProductsToBasket(IReadOnlyList<Product> productsShop)
         {
+            int _minProductCount = 5;
+            int _maxProductCount = 20;
+
             for (int _productCount = _random.Next(_minProductCount, _maxProductCount); _productCount > 0; _productCount--)
             {
                 _basketOfProduct.Add(productsShop[_random.Next(0, productsShop.Count - 1)]);
@@ -94,13 +96,13 @@ namespace ConsoleAppForCSLight
                 needMoney += product.price;
             }
 
-            if (needMoney <= Momey)
+            if (needMoney <= Money)
             {
                 return true;
             }
             else
             {
-                Console.WriteLine("мне нужно " + needMoney + ", а у меня только " + Momey);
+                Console.WriteLine("мне нужно " + needMoney + ", а у меня только " + Money);
                 return false;
             }
         }
@@ -121,47 +123,16 @@ namespace ConsoleAppForCSLight
 
     class Product 
     {
+        private static int _nextId = 0;
+        public int IdProduct { get; private set; }
         public string Name { get; protected set; }
         public int price { get; protected set; }
 
         public Product(string name, int price)
         {
+            IdProduct = _nextId++;
             Name = name;
             this.price = price;
-        }
-    }
-
-    class Milk : Product
-    {
-        public Milk() : base ("молоко", 1)
-        {
-        }
-    }
-
-    class Curd : Product
-    {
-        public Curd() : base("творог", 4)
-        {
-        }
-    }
-    class Mayonnaise : Product
-    {
-        public Mayonnaise() : base("майонез", 6)
-        {
-        }
-    }
-
-    class SourCream : Product
-    {
-        public SourCream() : base("сметана", 5)
-        {
-        }
-    }
-
-    class Kefir : Product
-    {
-        public Kefir() : base("кефир", 2)
-        {
         }
     }
 }
