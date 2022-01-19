@@ -11,128 +11,131 @@ namespace ConsoleAppForCSLight
     {
         static void Main(string[] args)
         {
-            Shop shop = new Shop();
-            shop.CreateCustomers();
-            shop.AcceptCustomers();
+            War war = new War();
+            war.Buttle(new Country("италия"), new Country("испания"));
         }
     }
 
-    class Shop
+    class War
     {
-        private IReadOnlyList<Product> _products = new List<Product> 
-        {new Product("молоко", 1), new Product("сыр", 6), new Product("майонез", 4), new Product("сметана", 3), new Product("кефир", 2)};
-        private Queue<Customer> _customers = new Queue<Customer>();
-        private int _maxCustomerCount = 10;
-        private Random _random = new Random();
-
-        public void CreateCustomers()
+        static Random Random = new Random();
+        public void Buttle(Country country1, Country country2)
         {
-            int customerCount = _random.Next(0, _maxCustomerCount);
-            Console.WriteLine("кажется мы забыли повесить ценники.. хорошо клиентов сегодня будет не много," + "всего то " + customerCount +
-                ", веть никто из них не знает, хватит ли у него денег.");
+            Console.WriteLine("Битва между " + country1.Name + " и " + country2.Name + " начинается.");
+            country1.ShowTroop();
+            country2.ShowTroop();
 
-            for (int i = 0; i < customerCount; i++)
+            while(country1.CheckConsistTroop() == true && country2.CheckConsistTroop() == true)
             {
-                _customers.Enqueue(new Customer());
-                Thread.Sleep(100);
+                country1.GetHit(country2.GetSoldier());
+                if (country1.CheckConsistTroop() == true)
+                {
+                    country2.GetHit(country1.GetSoldier());
+                }               
             }
-        }
-        public void AcceptCustomers()
-        {
-            foreach(Customer customer in _customers)
+
+            if (country1.CheckConsistTroop() == true)
             {
-                Console.WriteLine("у клиента " + customer.Money + " денег. вот что ему нужно.");                
-                customer.AddProductsToBasket(_products);
-                customer.ShowBasket();
-                customer.DeleteProduct();
-                Console.WriteLine("наконец то у него хватило денег! вот что он купил.");
-                customer.ShowBasket();
+                Console.WriteLine("Победила " + country1.Name);
+                country1.ShowTroop();
             }
-            Console.WriteLine("все на сегодня!");
+            else
+            {
+                Console.WriteLine("Победила " + country2.Name);
+                country2.ShowTroop();
+            }
         }
     }
-    class Customer
+
+    class Country
     {
-        private List<Product> _basketOfProduct = new List<Product>(); 
-        private Random _random = new Random();
-        public int Money { get; private set; }
+        static Random Random = new Random();
+        private List<Soldier> _troop = new List<Soldier>();
+        public string Name { get; private set; }
 
-        public Customer()
+        public Country(string name)
         {
-            int _minMoney = 10;
-            int _maxMoney = 50;
-            Money = _random.Next(_minMoney, _maxMoney);
-        }
+            int fullSoldierCount = 60;
+            Name = name;
 
-        public void AddProductsToBasket(IReadOnlyList<Product> productsShop)
-        {
-            int _minProductCount = 5;
-            int _maxProductCount = 20;
-
-            for (int _productCount = _random.Next(_minProductCount, _maxProductCount); _productCount > 0; _productCount--)
+            for (int i = 0; i < fullSoldierCount; i++)
             {
-                _basketOfProduct.Add(productsShop[_random.Next(0, productsShop.Count - 1)]);
+                _troop.Add(new Soldier());
             }
         }
 
-        public void ShowBasket()
+        public bool CheckConsistTroop()
         {
-            Console.WriteLine("------------------------------");
-
-            foreach(Product product in _basketOfProduct)
-            {
-                Console.WriteLine(product.Name);
-            }
-
-            Console.WriteLine("------------------------------");
-        }
-
-        public bool CheckMoneyEnough()
-        {
-            int needMoney = 0;
-
-            foreach (Product product in _basketOfProduct)
-            {
-                needMoney += product.price;
-            }
-
-            if (needMoney <= Money)
+            if(_troop.Count > 0)
             {
                 return true;
             }
             else
             {
-                Console.WriteLine("мне нужно " + needMoney + ", а у меня только " + Money);
                 return false;
             }
         }
 
-        public void DeleteProduct()
+        public void GetHit(Soldier soldier)
         {
-            
-            while (!CheckMoneyEnough())
+            int indexSoldier = Random.Next(1, _troop.Count) - 1;
+            _troop[indexSoldier].TakeDamage(soldier.Attack);
+            if (_troop[indexSoldier].Health < 0)
             {
-                int indexDeleteProduct = _random.Next(1, _basketOfProduct.Count) - 1;
-                Console.WriteLine("выложил " + _basketOfProduct[indexDeleteProduct].Name + " :(");
-                _basketOfProduct.RemoveAt(indexDeleteProduct);
-                
-                Console.ReadKey();
+                _troop.RemoveAt(indexSoldier);
+                Console.WriteLine("погиб солдат страны " + Name);
             }
+        }
+
+        public Soldier GetSoldier()
+        {
+            return _troop[Random.Next(1, _troop.Count) - 1];
+        }
+
+        public void ShowTroop()
+        {
+            int i = 1;
+            Console.WriteLine("Отряд " + Name);
+
+            foreach(Soldier soldier in _troop)
+            {               
+                Console.WriteLine(i + ") " + soldier.ToString());
+                i++;
+            }
+            Console.WriteLine("---------------------------");
+            Console.ReadKey();
         }
     }
 
-    class Product 
+    class Soldier
     {
-        private static int _nextId = 0;
-        public int IdProduct { get; private set; }
-        public string Name { get; protected set; }
-        public int price { get; protected set; }
+        static Random Random = new Random();
+        public int Health { get; private set; }
+        public int Attack { get; private set; }
 
-        public Product(string name, int price)
+        public Soldier()
         {
-            IdProduct = _nextId++;
-            Name = name;
-            this.price = price;
+            int minHealth = 50;
+            int maxHealth = 100;
+            int minAttack = 10;
+            int maxAttack = 20;
+            Health = Random.Next(minHealth, maxHealth);
+            Attack = Random.Next(minAttack, maxAttack);
+        }
+
+        public void TakeDamage(int attack)
+        {
+            Health -= attack;
+        }
+
+        public int MakeDamage()
+        {
+            return Attack;
+        }
+
+        public override string ToString()
+        {
+            return "| hp: " + Health + " attack: " + Attack + " |";
         }
     }
 }
