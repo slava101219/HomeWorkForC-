@@ -68,6 +68,7 @@ namespace ConsoleAppForCSLight
         public void DeleteFish()
         {
             Console.WriteLine("Введите номер удаляемой рыбки.");
+
             if(int.TryParse(Console.ReadLine(), out int result))
             {
                 if (result > 0 && result < _fish.Count)
@@ -91,6 +92,7 @@ namespace ConsoleAppForCSLight
             {
                 fish.GrowOld();               
             }
+
             Console.WriteLine("рыбки постарели.");
             CheckAndDeadFish();
         }
@@ -110,10 +112,12 @@ namespace ConsoleAppForCSLight
         public void ShowFish()
         {
             Console.WriteLine("------------------");
+
             foreach(Fish fish in _fish)
             {
                 Console.WriteLine(fish.ToString());
             }
+
             Console.WriteLine("------------------");
         }
     }
