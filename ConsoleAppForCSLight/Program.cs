@@ -11,131 +11,132 @@ namespace ConsoleAppForCSLight
     {
         static void Main(string[] args)
         {
-            War war = new War();
-            war.Buttle(new Country("италия"), new Country("испания"));
-        }
-    }
-
-    class War
-    {
-        static Random Random = new Random();
-        public void Buttle(Country country1, Country country2)
-        {
-            Console.WriteLine("Битва между " + country1.Name + " и " + country2.Name + " начинается.");
-            country1.ShowTroop();
-            country2.ShowTroop();
-
-            while(country1.CheckConsistTroop() == true && country2.CheckConsistTroop() == true)
+            Aquarium aquarium = new Aquarium();
+            string choice;
+            bool isWork = true;
+            
+            while(isWork == true)
             {
-                country1.GetHit(country2.GetSoldier());
-                if (country1.CheckConsistTroop() == true)
+                Console.WriteLine("1) любоваться рбками. 2) добавить рыбку в аквариум. 3) убрать рыбку из аквариума) 4) прекратить это все!");
+                choice = Console.ReadLine();
+
+                switch (choice)
                 {
-                    country2.GetHit(country1.GetSoldier());
-                }               
+                    case "1":                        
+                        aquarium.LookAtFish();
+                        aquarium.ShowFish();
+                        break;
+                    case "2":
+                        aquarium.AddFish();
+                        aquarium.ShowFish();
+                        break;
+                    case "3":
+                        aquarium.DeleteFish();
+                        aquarium.ShowFish();
+                        break;
+                    case "4":
+                        isWork = false;
+                        break;
+                    default:
+                        Console.WriteLine("Ошибка ввода.");
+                        break;
+                }
             }
-
-            if (country1.CheckConsistTroop() == true)
-            {
-                Console.WriteLine("Победила " + country1.Name);
-                country1.ShowTroop();
-            }
-            else
-            {
-                Console.WriteLine("Победила " + country2.Name);
-                country2.ShowTroop();
-            }
+                
         }
     }
 
-    class Country
+    class Aquarium
     {
-        static Random Random = new Random();
-        private List<Soldier> _troop = new List<Soldier>();
-        public string Name { get; private set; }
+        private int maxFishInAquarium = 10;
+        private List<Fish> _fish = new List<Fish>();
 
-        public Country(string name)
+        public void AddFish()
         {
-            int fullSoldierCount = 60;
+            if(_fish.Count < maxFishInAquarium)
+            {
+                Console.WriteLine("введите имя рыбки.");
+                _fish.Add(new Fish(Console.ReadLine()));
+            }
+            else
+            {
+                Console.WriteLine("Аквариум переполнен((");
+            }
+            
+        }
+
+        public void DeleteFish()
+        {
+            Console.WriteLine("Введите номер удаляемой рыбки.");
+            if(int.TryParse(Console.ReadLine(), out int result))
+            {
+                if (result > 0 && result < _fish.Count)
+                {
+                    _fish.RemoveAt(result - 1);
+                }
+                else
+                {
+                    Console.WriteLine("ошибка.. попробуйте снова.");
+                }
+            }
+            else
+            {
+                Console.WriteLine("ошибка.. попробуйте снова.");
+            }
+        }
+
+        public void LookAtFish()
+        {
+            foreach (Fish fish in _fish)
+            {
+                fish.GrowOld();               
+            }
+            Console.WriteLine("рыбки постарели.");
+            CheckAndDeadFish();
+        }
+
+        public void CheckAndDeadFish()
+        {
+            for (int i = _fish.Count - 1; i >= 0; i--)
+            {
+                if (_fish[i].Age < 1)
+                {
+                    Console.WriteLine("рыбка" + _fish[i].Name + "умерла.");
+                    _fish.RemoveAt(i);
+                }
+            }    
+        }
+
+        public void ShowFish()
+        {
+            Console.WriteLine("------------------");
+            foreach(Fish fish in _fish)
+            {
+                Console.WriteLine(fish.ToString());
+            }
+            Console.WriteLine("------------------");
+        }
+    }
+
+    class Fish
+    {
+        public String Name { get; private set; }
+        public int Age { get; private set; }
+
+        public Fish(string name)
+        {
+            Age = 10;
             Name = name;
-
-            for (int i = 0; i < fullSoldierCount; i++)
-            {
-                _troop.Add(new Soldier());
-            }
         }
 
-        public bool CheckConsistTroop()
+        public void GrowOld()
         {
-            if(_troop.Count > 0)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        public void GetHit(Soldier soldier)
-        {
-            int indexSoldier = Random.Next(1, _troop.Count) - 1;
-            _troop[indexSoldier].TakeDamage(soldier.Attack);
-            if (_troop[indexSoldier].Health < 0)
-            {
-                _troop.RemoveAt(indexSoldier);
-                Console.WriteLine("погиб солдат страны " + Name);
-            }
-        }
-
-        public Soldier GetSoldier()
-        {
-            return _troop[Random.Next(1, _troop.Count) - 1];
-        }
-
-        public void ShowTroop()
-        {
-            int i = 1;
-            Console.WriteLine("Отряд " + Name);
-
-            foreach(Soldier soldier in _troop)
-            {               
-                Console.WriteLine(i + ") " + soldier.ToString());
-                i++;
-            }
-            Console.WriteLine("---------------------------");
-            Console.ReadKey();
-        }
-    }
-
-    class Soldier
-    {
-        static Random Random = new Random();
-        public int Health { get; private set; }
-        public int Attack { get; private set; }
-
-        public Soldier()
-        {
-            int minHealth = 50;
-            int maxHealth = 100;
-            int minAttack = 10;
-            int maxAttack = 20;
-            Health = Random.Next(minHealth, maxHealth);
-            Attack = Random.Next(minAttack, maxAttack);
-        }
-
-        public void TakeDamage(int attack)
-        {
-            Health -= attack;
-        }
-
-        public int MakeDamage()
-        {
-            return Attack;
+            Age -= 1;
         }
 
         public override string ToString()
         {
-            return "| hp: " + Health + " attack: " + Attack + " |";
+            return Name + " - " + Age + " г.";
         }
     }
 }
