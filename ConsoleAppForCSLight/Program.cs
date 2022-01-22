@@ -46,12 +46,12 @@ namespace ConsoleAppForCSLight
 
     class Aquarium
     {
-        private int maxFishInAquarium = 10;
+        private int _maxFishInAquarium = 10;
         private List<Fish> _fish = new List<Fish>();
 
         public void AddFish()
         {
-            if(_fish.Count < maxFishInAquarium)
+            if(_fish.Count < _maxFishInAquarium)
             {
                 Console.WriteLine("введите имя рыбки.");
                 _fish.Add(new Fish(Console.ReadLine()));
@@ -99,7 +99,7 @@ namespace ConsoleAppForCSLight
         {
             for (int i = _fish.Count - 1; i >= 0; i--)
             {
-                if (_fish[i].Age >= _fish[i].MaxAge)
+                if (_fish[i].IsDead)
                 {
                     Console.WriteLine("рыбка " + _fish[i].Name + " умерла.");
                     _fish.RemoveAt(i);
@@ -124,6 +124,7 @@ namespace ConsoleAppForCSLight
 
     class Fish
     {
+        public bool IsDead => Age >= MaxAge;
         public int MaxAge { get; private set; } = 10;
         public String Name { get; private set; }
         public int Age { get; private set; }
