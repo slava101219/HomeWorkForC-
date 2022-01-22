@@ -17,6 +17,7 @@ namespace ConsoleAppForCSLight
             
             while(isWork == true)
             {
+                aquarium.ShowFish();
                 Console.WriteLine("1) любоваться рбками. 2) добавить рыбку в аквариум. 3) убрать рыбку из аквариума) 4) прекратить это все!");
                 choice = Console.ReadLine();
 
@@ -24,15 +25,12 @@ namespace ConsoleAppForCSLight
                 {
                     case "1":                        
                         aquarium.LookAtFish();
-                        aquarium.ShowFish();
                         break;
                     case "2":
                         aquarium.AddFish();
-                        aquarium.ShowFish();
                         break;
                     case "3":
                         aquarium.DeleteFish();
-                        aquarium.ShowFish();
                         break;
                     case "4":
                         isWork = false;
@@ -71,7 +69,7 @@ namespace ConsoleAppForCSLight
 
             if(int.TryParse(Console.ReadLine(), out int result))
             {
-                if (result > 0 && result < _fish.Count)
+                if (result > 0 && result <= _fish.Count)
                 {
                     _fish.RemoveAt(result - 1);
                 }
@@ -94,16 +92,16 @@ namespace ConsoleAppForCSLight
             }
 
             Console.WriteLine("рыбки постарели.");
-            CheckAndDeadFish();
+            RemoveDeadFish();
         }
 
-        public void CheckAndDeadFish()
+        public void RemoveDeadFish()
         {
             for (int i = _fish.Count - 1; i >= 0; i--)
             {
-                if (_fish[i].Age < 1)
+                if (_fish[i].Age >= _fish[i].MaxAge)
                 {
-                    Console.WriteLine("рыбка" + _fish[i].Name + "умерла.");
+                    Console.WriteLine("рыбка " + _fish[i].Name + " умерла.");
                     _fish.RemoveAt(i);
                 }
             }    
@@ -111,6 +109,8 @@ namespace ConsoleAppForCSLight
 
         public void ShowFish()
         {
+            Console.ReadKey();
+            Console.Clear();
             Console.WriteLine("------------------");
 
             foreach(Fish fish in _fish)
@@ -124,18 +124,19 @@ namespace ConsoleAppForCSLight
 
     class Fish
     {
+        public int MaxAge { get; private set; } = 10;
         public String Name { get; private set; }
         public int Age { get; private set; }
 
         public Fish(string name)
         {
-            Age = 10;
+            Age = 0;
             Name = name;
         }
 
         public void GrowOld()
         {
-            Age -= 1;
+            Age += 1;
         }
 
         public override string ToString()
