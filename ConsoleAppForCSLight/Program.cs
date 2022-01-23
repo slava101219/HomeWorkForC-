@@ -24,7 +24,7 @@ namespace ConsoleAppForCSLight
                 switch (choice)
                 {
                     case "1":                        
-                        aquarium.LookAtFish();
+                        aquarium.GrowOldFishes();
                         break;
                     case "2":
                         aquarium.AddFish();
@@ -46,15 +46,15 @@ namespace ConsoleAppForCSLight
 
     class Aquarium
     {
-        private int _maxFishInAquarium = 10;
-        private List<Fish> _fish = new List<Fish>();
+        private int _capacity = 10;
+        private List<Fish> _fishes = new List<Fish>();
 
         public void AddFish()
         {
-            if(_fish.Count < _maxFishInAquarium)
+            if(_fishes.Count < _capacity)
             {
                 Console.WriteLine("введите имя рыбки.");
-                _fish.Add(new Fish(Console.ReadLine()));
+                _fishes.Add(new Fish(Console.ReadLine()));
             }
             else
             {
@@ -69,9 +69,9 @@ namespace ConsoleAppForCSLight
 
             if(int.TryParse(Console.ReadLine(), out int result))
             {
-                if (result > 0 && result <= _fish.Count)
+                if (result > 0 && result <= _fishes.Count)
                 {
-                    _fish.RemoveAt(result - 1);
+                    _fishes.RemoveAt(result - 1);
                 }
                 else
                 {
@@ -84,9 +84,9 @@ namespace ConsoleAppForCSLight
             }
         }
 
-        public void LookAtFish()
+        public void GrowOldFishes()
         {
-            foreach (Fish fish in _fish)
+            foreach (Fish fish in _fishes)
             {
                 fish.GrowOld();               
             }
@@ -97,12 +97,12 @@ namespace ConsoleAppForCSLight
 
         public void RemoveDeadFish()
         {
-            for (int i = _fish.Count - 1; i >= 0; i--)
+            for (int i = _fishes.Count - 1; i >= 0; i--)
             {
-                if (_fish[i].IsDead)
+                if (_fishes[i].IsDead)
                 {
-                    Console.WriteLine("рыбка " + _fish[i].Name + " умерла.");
-                    _fish.RemoveAt(i);
+                    Console.WriteLine("рыбка " + _fishes[i].Name + " умерла.");
+                    _fishes.RemoveAt(i);
                 }
             }    
         }
@@ -113,7 +113,7 @@ namespace ConsoleAppForCSLight
             Console.Clear();
             Console.WriteLine("------------------");
 
-            foreach(Fish fish in _fish)
+            foreach(Fish fish in _fishes)
             {
                 Console.WriteLine(fish.ToString());
             }
