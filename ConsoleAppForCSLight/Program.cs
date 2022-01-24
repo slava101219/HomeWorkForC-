@@ -11,138 +11,168 @@ namespace ConsoleAppForCSLight
     {
         static void Main(string[] args)
         {
-            Aquarium aquarium = new Aquarium();
-            string choice;
-            bool isWork = true;
-            
-            while(isWork == true)
+            Zoo zoo = new Zoo();
+            bool IsWork = true;
+            String choice;
+
+            while(IsWork)
             {
-                aquarium.ShowFish();
-                Console.WriteLine("1) любоваться рбками. 2) добавить рыбку в аквариум. 3) убрать рыбку из аквариума) 4) прекратить это все!");
+                Console.Clear();
+                Console.WriteLine("Выбери клетку для просмотра животных. Всего 4 клетки. или exit для выхода.");
                 choice = Console.ReadLine();
 
-                switch (choice)
+                switch(choice)
                 {
-                    case "1":                        
-                        aquarium.GrowOldFishes();
+                    case "1":
+                        zoo.ShowInfoCell(zoo.GetCell(choice));
                         break;
                     case "2":
-                        aquarium.AddFish();
+                        zoo.ShowInfoCell(zoo.GetCell(choice));
                         break;
                     case "3":
-                        aquarium.DeleteFish();
+                        zoo.ShowInfoCell(zoo.GetCell(choice));
                         break;
                     case "4":
-                        isWork = false;
+                        zoo.ShowInfoCell(zoo.GetCell(choice));
+                        break;
+                    case "exit":
+                        IsWork = false;
                         break;
                     default:
-                        Console.WriteLine("Ошибка ввода.");
                         break;
                 }
             }
-                
         }
     }
 
-    class Aquarium
+    class Zoo
     {
-        private int _capacity = 10;
-        private List<Fish> _fishes = new List<Fish>();
+        private List<Animal> _bisons = new List<Animal>() { new Bison(), new Bison() };
+        private List<Animal> _bulls = new List<Animal>() { new Bull(), new Bull() };
+        private List<Animal> _horses = new List<Animal>() { new Horse(), new Horse(), new Horse() } ;
+        private List<Animal> _deers = new List<Animal>() { new Deer(), new Deer(), new Deer(), new Deer() };
 
-        public void AddFish()
+        public List<Animal> GetCell(string choice)
         {
-            if(_fishes.Count < _capacity)
+            if (choice == "1")
             {
-                Console.WriteLine("введите имя рыбки.");
-                _fishes.Add(new Fish(Console.ReadLine()));
+                return _bisons;
+            }
+            else if (choice == "2")
+            {
+                return _bulls;
+            }
+            else if (choice == "3")
+            {
+                return _horses;
             }
             else
             {
-                Console.WriteLine("Аквариум переполнен((");
-            }
-            
-        }
-
-        public void DeleteFish()
-        {
-            Console.WriteLine("Введите номер удаляемой рыбки.");
-
-            if(int.TryParse(Console.ReadLine(), out int result))
-            {
-                if (result > 0 && result <= _fishes.Count)
-                {
-                    _fishes.RemoveAt(result - 1);
-                }
-                else
-                {
-                    Console.WriteLine("ошибка.. попробуйте снова.");
-                }
-            }
-            else
-            {
-                Console.WriteLine("ошибка.. попробуйте снова.");
+                return _deers;
             }
         }
 
-        public void GrowOldFishes()
+        public void ShowInfoCell(List<Animal> cell)
         {
-            foreach (Fish fish in _fishes)
+            Console.WriteLine("в клетке " + cell.Count + " животных. Из них " + CountingNumberMales(cell) + " самцы.");
+            Console.WriteLine("Слышны звуки : " + cell[0].ToString());
+            Console.Write("Животным по ");
+
+            foreach(Animal animal in cell)
             {
-                fish.GrowOld();               
+                Console.Write(animal.GetAge() + ", ");
             }
 
-            Console.WriteLine("рыбки постарели.");
-            RemoveDeadFish();
-        }
-
-        public void RemoveDeadFish()
-        {
-            for (int i = _fishes.Count - 1; i >= 0; i--)
-            {
-                if (_fishes[i].IsDead)
-                {
-                    Console.WriteLine("рыбка " + _fishes[i].Name + " умерла.");
-                    _fishes.RemoveAt(i);
-                }
-            }    
-        }
-
-        public void ShowFish()
-        {
+            Console.Write("лет соответственно.");
             Console.ReadKey();
-            Console.Clear();
-            Console.WriteLine("------------------");
+        }
 
-            foreach(Fish fish in _fishes)
+        public int CountingNumberMales(List<Animal> cell)
+        {
+            int malesCount = 0;
+
+            foreach (Animal animal in cell)
             {
-                Console.WriteLine(fish.ToString());
+                malesCount += animal.GetSex();
             }
 
-            Console.WriteLine("------------------");
+            return malesCount;
         }
     }
 
-    class Fish
+    class Animal
     {
-        public bool IsDead => Age >= MaxAge;
-        public int MaxAge { get; private set; } = 10;
-        public String Name { get; private set; }
-        public int Age { get; private set; }
+        static Random random = new Random();
+        private int _male = 2;
+        private int _minAge = 1;
+        private int _maxAge = 6;
+        protected int Sex;
+        protected int Age { get; private set; }
+        protected string Sound { get; private set; }
 
-        public Fish(string name)
+        public Animal()
         {
-            Age = 0;
-            Name = name;
+            Sex = random.Next(0, _male);
+            Age = random.Next(_minAge, _maxAge);
         }
 
-        public void GrowOld()
+        public int GetSex()
         {
-            Age += 1;
+            return Sex;
+        }
+
+        public int GetAge()
+        {
+            return Age;
+        }
+    }
+
+    class Bison : Animal
+    {
+        public Bison() : base()
+        {
         }
 
         public override string ToString()
         {
-            return Name + " - " + Age + " г.";
+            return "зубров - Э-э-э";
+        }
+    }
+
+    class Bull : Animal
+    {
+        public Bull() : base()
+        {
+            Sex = 1;
+        }
+
+        public override string ToString()
+        {
+            return "быков - Му-у-у";
+        }
+    }
+
+    class Horse : Animal
+    {
+        public Horse() : base()
+        {
+        }
+
+        public override string ToString()
+        {
+            return "лошадей - Ии-го-го";
+        }
+    }
+
+    class Deer : Animal
+    {
+        public Deer() : base()
+        {   
+        }
+
+        public override string ToString()
+        {
+            return "оленей - О-о-о";
         }
     }
 }
