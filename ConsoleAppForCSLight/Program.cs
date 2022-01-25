@@ -61,28 +61,28 @@ namespace ConsoleAppForCSLight
 
     class Zoo
     {
-        private Cell cell = new Cell();
+        private Cell _cell = new Cell();
         public void Start()
         {
-            bool IsWork = true;
+            bool isWork = true;
             String choice;
 
-            while (IsWork)
+            while (isWork)
             {
                 Console.Clear();
-                Console.WriteLine("Выбери клетку для просмотра животных. Всего " + cell.GetCellCount() + " клетки. или exit для выхода.");
+                Console.WriteLine("Выбери клетку для просмотра животных. Всего " + _cell.GetCellCount() + " клетки. или exit для выхода.");
                 choice = Console.ReadLine();
 
                 if (int.TryParse(choice, out int result))
                 {
-                    if(result > 0 && result <= cell.GetCellCount())
+                    if(result > 0 && result <= _cell.GetCellCount())
                     {
-                        cell.ShowInfoCell(result - 1);
+                        _cell.ShowInfoCell(result - 1);
                     }
                 }
                 else if (choice == "exit")
                 {
-                    IsWork = false;
+                    isWork = false;
                 }
             }
         }
