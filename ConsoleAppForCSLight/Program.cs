@@ -16,9 +16,9 @@ namespace ConsoleAppForCSLight
         }
     }
 
-    class Cell
+    class AnimalZone
     {
-        private List<List<Animal>> _cells = new List<List<Animal>>() 
+        private List<List<Animal>> _cell = new List<List<Animal>>() 
         { 
             new List<Animal>() { new Bison(), new Bison() }, 
             new List<Animal>() { new Bull(), new Bull() },
@@ -26,13 +26,13 @@ namespace ConsoleAppForCSLight
             new List<Animal>() { new Deer(), new Deer(), new Deer(), new Deer() } 
         };
 
-        public void ShowInfoCell(int cellNumber)
+        public void ShowInfo(int cellNumber)
         {
-            Console.WriteLine("в клетке " + _cells[cellNumber].Count() + " животных. Из них " + CountingNumberMales(_cells[cellNumber]) + " самцы.");
-            Console.WriteLine("Слышны звуки : " + _cells[cellNumber][0].ToString());
+            Console.WriteLine("в клетке " + _cell[cellNumber].Count() + " животных. Из них " + CountingNumberMales(_cell[cellNumber]) + " самцы.");
+            Console.WriteLine("Слышны звуки : " + _cell[cellNumber][0].ToString());
             Console.Write("Животным по ");
 
-            foreach (Animal animal in _cells[cellNumber])
+            foreach (Animal animal in _cell[cellNumber])
             {
                 Console.Write(animal.Age + ", ");
             }
@@ -55,13 +55,13 @@ namespace ConsoleAppForCSLight
 
         public int GetCellCount()
         {
-            return _cells.Count();
+            return _cell.Count();
         }
     }
 
     class Zoo
     {
-        private Cell _cell = new Cell();
+        private AnimalZone animalZone = new AnimalZone();
         public void Start()
         {
             bool isWork = true;
@@ -70,14 +70,14 @@ namespace ConsoleAppForCSLight
             while (isWork)
             {
                 Console.Clear();
-                Console.WriteLine("Выбери клетку для просмотра животных. Всего " + _cell.GetCellCount() + " клетки. или exit для выхода.");
+                Console.WriteLine("Выбери клетку для просмотра животных. Всего " + animalZone.GetCellCount() + " клетки. или exit для выхода.");
                 choice = Console.ReadLine();
 
                 if (int.TryParse(choice, out int result))
                 {
-                    if(result > 0 && result <= _cell.GetCellCount())
+                    if(result > 0 && result <= animalZone.GetCellCount())
                     {
-                        _cell.ShowInfoCell(result - 1);
+                        animalZone.ShowInfo(result - 1);
                     }
                 }
                 else if (choice == "exit")
@@ -93,7 +93,7 @@ namespace ConsoleAppForCSLight
     class Animal
     {
         private static Random _random = new Random();
-        private int _male = 2;
+        private int _male = 1;
         private int _minAge = 1;
         private int _maxAge = 6;
         public int Sex { get; private set; }
@@ -101,7 +101,7 @@ namespace ConsoleAppForCSLight
 
         public Animal()
         {
-            Sex = _random.Next(0, _male);
+            Sex = _random.Next(0, _male + 1);
             Age = _random.Next(_minAge, _maxAge);
         }
 
