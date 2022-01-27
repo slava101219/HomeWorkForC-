@@ -16,23 +16,37 @@ namespace ConsoleAppForCSLight
         }
     }
 
-    class AnimalZone
+    class Cell
     {
-        private List<List<Animal>> _cell = new List<List<Animal>>() 
-        { 
-            new List<Animal>() { new Bison(), new Bison() }, 
-            new List<Animal>() { new Bull(), new Bull() },
-            new List<Animal>() { new Horse(), new Horse(), new Horse() },
-            new List<Animal>() { new Deer(), new Deer(), new Deer(), new Deer() } 
-        };
+        private List<Animal> _cell = new List<Animal>();
 
-        public void ShowInfo(int cellNumber)
+        public Cell(int animalVariant)
         {
-            Console.WriteLine("в клетке " + _cell[cellNumber].Count() + " животных. Из них " + CountingNumberMales(_cell[cellNumber]) + " самцы.");
-            Console.WriteLine("Слышны звуки : " + _cell[cellNumber][0].ToString());
+            if (animalVariant == 1)
+            {
+                _cell = new List<Animal>() { new Bison(), new Bison() };
+            }
+            else if (animalVariant == 2)
+            {
+                _cell = new List<Animal>() { new Bull(), new Bull() };
+            }
+            else if (animalVariant == 3)
+            {
+                _cell = new List<Animal>() { new Horse(), new Horse(), new Horse() };
+            }
+            else if (animalVariant == 4)
+            {
+                _cell = new List<Animal>() { new Deer(), new Deer(), new Deer(), new Deer() };
+            }
+        }
+
+        public void ShowInfo()
+        {
+            Console.WriteLine("в клетке " + _cell.Count() + " животных. Из них " + CountingNumberMales(_cell) + " самцы.");
+            Console.WriteLine("Слышны звуки : " + _cell[0].ToString());
             Console.Write("Животным по ");
 
-            foreach (Animal animal in _cell[cellNumber])
+            foreach (Animal animal in _cell)
             {
                 Console.Write(animal.Age + ", ");
             }
@@ -52,16 +66,11 @@ namespace ConsoleAppForCSLight
 
             return malesCount;
         }
-
-        public int GetCellCount()
-        {
-            return _cell.Count();
-        }
     }
 
     class Zoo
     {
-        private AnimalZone animalZone = new AnimalZone();
+        private List<Cell> _cells = new List<Cell>() { new Cell(1), new Cell(2), new Cell(3), new Cell(4)};
         public void Start()
         {
             bool isWork = true;
@@ -70,14 +79,14 @@ namespace ConsoleAppForCSLight
             while (isWork)
             {
                 Console.Clear();
-                Console.WriteLine("Выбери клетку для просмотра животных. Всего " + animalZone.GetCellCount() + " клетки. или exit для выхода.");
+                Console.WriteLine("Выбери клетку для просмотра животных. Всего " + _cells.Count + " клетки. или exit для выхода.");
                 choice = Console.ReadLine();
 
                 if (int.TryParse(choice, out int result))
                 {
-                    if(result > 0 && result <= animalZone.GetCellCount())
+                    if (result > 0 && result <= _cells.Count)
                     {
-                        animalZone.ShowInfo(result - 1);
+                        _cells[result - 1].ShowInfo();
                     }
                 }
                 else if (choice == "exit")
