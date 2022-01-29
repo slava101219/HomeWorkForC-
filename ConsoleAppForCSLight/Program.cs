@@ -11,161 +11,172 @@ namespace ConsoleAppForCSLight
     {
         static void Main(string[] args)
         {
-            Zoo zoo = new Zoo();
-            zoo.Start(); 
+            string choice;
+            bool IsWork = true;
+            CarServiceStation carServiceStation = new CarServiceStation();
+
+            while(IsWork == true)
+            {
+                Console.WriteLine("1) принять новую машину. 2) купить деталь. 3) просмотр склада. 4) выход.");
+                choice = Console.ReadLine();
+
+                switch(choice)
+                {
+                    case "1":
+                        carServiceStation.ServiceNewCustomer();
+                        break;
+                    case "2":
+                        carServiceStation.BuySpare();
+                        break;
+                    case "3":
+                        carServiceStation.ShowWarehouse();
+                        break;
+                    case "4":
+                        IsWork = false;
+                        break;
+                    default:
+                        Console.WriteLine("error");
+                        break;
+                }
+            }
         }
     }
-
-    class Cell
+    
+    class CarServiceStation
     {
-        private List<Animal> _cell = new List<Animal>();
+        private List<Spare> _warehouse = new List<Spare>();
+        private int _money = 1000;
 
-        public Cell(int animalVariant)
+        public void BuySpare()
         {
-            if (animalVariant == 1)
+            Console.WriteLine("выбрать можно из:");
+
+            foreach(String name in Spare.GetNames())
             {
-                _cell = new List<Animal>() { new Bison(), new Bison() };
+                Console.Write(name + ", ");
             }
-            else if (animalVariant == 2)
+
+            Console.WriteLine("введите номер выбранной запчасти.");
+            string choiceSpare = Console.ReadLine();
+            
+            if(int.TryParse(choiceSpare, out int result))
             {
-                _cell = new List<Animal>() { new Bull(), new Bull() };
+                if(result > 0 && result <= Spare.GetNames().Length)
+                {
+                    Spare spare = new Spare(result - 1);
+                    if(_money >= spare.Price)
+                    {
+                        _money -= spare.Price;
+                        _warehouse.Add(spare);
+                        Console.WriteLine("Куплена " + spare.Name + ". Денег осталось: " + _money);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Недостаточно денег.");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Ошибка ввода.");
+                }
             }
-            else if (animalVariant == 3)
+            else
             {
-                _cell = new List<Animal>() { new Horse(), new Horse(), new Horse() };
-            }
-            else if (animalVariant == 4)
-            {
-                _cell = new List<Animal>() { new Deer(), new Deer(), new Deer(), new Deer() };
+                Console.WriteLine("Ошибка ввода.");
             }
         }
 
-        public void ShowInfo()
+        public void ServiceNewCustomer()
         {
-            Console.WriteLine("в клетке " + _cell.Count() + " животных. Из них " + CountingNumberMales(_cell) + " самцы.");
-            Console.WriteLine("Слышны звуки : " + _cell[0].ToString());
-            Console.Write("Животным по ");
-
-            foreach (Animal animal in _cell)
+            CarCustomer carCustomer = new CarCustomer();
+            Console.WriteLine("Новая тачка на ремонт! Требуется замена " + carCustomer.NeedSpareName + ". ");
+            
+            if(_warehouse.Contains(carCustomer.Spare)) 
             {
-                Console.Write(animal.Age + ", ");
+                int totalPrice = carCustomer.Spare.PriceReplacement + carCustomer.Spare.Price;
+                Console.WriteLine("на складе есть необходимая деталь. Начинаем замену.");
+                _money += totalPrice;
+                Console.WriteLine("Мы выписали чек: стоимость детали - " + carCustomer.Spare.Price + ", стоимость ремонта - " + carCustomer.Spare.PriceReplacement);
+                Console.WriteLine("Итого: " + totalPrice + ". на счету - " + _money);
+                _warehouse.Remove(carCustomer.Spare);
+            }
+            else
+            {
+                Console.WriteLine("На складе нет этой детали.. Черт, мы упустили клиента..");
+                _money -= carCustomer.Spare.PriceReplacement;
+                Console.WriteLine("Мы понесли убытки в размере " + carCustomer.Spare.PriceReplacement + ". На счету: " + _money);
             }
 
-            Console.Write("лет соответственно.");
             Console.ReadKey();
         }
 
-        public int CountingNumberMales(List<Animal> cell)
+        public void ShowWarehouse()
         {
-            int malesCount = 0;
+            Console.Clear();
+            Console.WriteLine("На счету: " + _money);
+            Console.WriteLine("----------------------");
 
-            foreach (Animal animal in cell)
+            foreach (Spare spare in _warehouse)
             {
-                malesCount += animal.Sex;
+                Console.WriteLine(spare.Name);
             }
 
-            return malesCount;
+            Console.WriteLine("----------------------");
         }
     }
 
-    class Zoo
+    class Spare
     {
-        private List<Cell> _cells = new List<Cell>() { new Cell(1), new Cell(2), new Cell(3), new Cell(4)};
-        public void Start()
-        {
-            bool isWork = true;
-            String choice;
+        static Random random = new Random();
+        private static List<string> _names = new List<string>() { "фара", "Зеркало", "Масло", "Ремень", "Подшипник", "Сальник", "Фильтр" };
+        private static List<int> _prices = new List<int>() { 70, 80, 20, 10, 15, 10, 15 };
+        private static List<int> _pricesReplacement = new List<int>() { 20, 20, 15, 30, 30, 25, 25 };
+        public string Name { get; private set; }
+        public int Price { get; private set; }
+        public int PriceReplacement { get; private set; }
 
-            while (isWork)
+        public static string[] GetNames()
+        {
+            string[] arrayNames = new string[_names.Count];
+            _names.CopyTo(arrayNames);
+            return arrayNames;
+        }
+
+        public Spare(int spareVariant)
+        {
+            Name = _names[spareVariant];
+            Price = _prices[spareVariant];
+            PriceReplacement = _pricesReplacement[spareVariant];
+        }
+        public Spare()
+        {
+            int spareVariant = random.Next(0, _names.Count);
+            Name = _names[spareVariant];
+            Price = _prices[spareVariant];
+            PriceReplacement = _pricesReplacement[spareVariant];
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is Spare spare)
             {
-                Console.Clear();
-                Console.WriteLine("Выбери клетку для просмотра животных. Всего " + _cells.Count + " клетки. или exit для выхода.");
-                choice = Console.ReadLine();
-
-                if (int.TryParse(choice, out int result))
-                {
-                    if (result > 0 && result <= _cells.Count)
-                    {
-                        _cells[result - 1].ShowInfo();
-                    }
-                }
-                else if (choice == "exit")
-                {
-                    isWork = false;
-                }
+                return Name == spare.Name;
             }
-        }
-
-        
-    }
-
-    class Animal
-    {
-        private static Random _random = new Random();
-        private int _male = 1;
-        private int _minAge = 1;
-        private int _maxAge = 6;
-        public int Sex { get; private set; }
-        public int Age { get; private set; }
-
-        public Animal()
-        {
-            Sex = _random.Next(0, _male + 1);
-            Age = _random.Next(_minAge, _maxAge);
-        }
-
-        public void SetSexMale()
-        {
-            Sex = 1;
+            else
+            {
+                return false;
+            }            
         }
     }
 
-    class Bison : Animal
+    class CarCustomer
     {
-        public Bison() : base()
-        {
-        }
+        public Spare Spare = new Spare();
+        public string NeedSpareName;
 
-        public override string ToString()
+        public CarCustomer()
         {
-            return "зубров - Э-э-э";
-        }
-    }
-
-    class Bull : Animal
-    {
-        public Bull() : base()
-        {
-            SetSexMale();
-        }
-
-        public override string ToString()
-        {
-            return "быков - Му-у-у";
-        }
-    }
-
-    class Horse : Animal
-    {
-        public Horse() : base()
-        {
-        }
-
-        public override string ToString()
-        {
-            return "лошадей - Ии-го-го";
-        }
-    }
-
-    class Deer : Animal
-    {
-        public Deer() : base()
-        {   
-        }
-
-        public override string ToString()
-        {
-            return "оленей - О-о-о";
+            NeedSpareName = Spare.Name;
         }
     }
 }
