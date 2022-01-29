@@ -12,10 +12,10 @@ namespace ConsoleAppForCSLight
         static void Main(string[] args)
         {
             string choice;
-            bool IsWork = true;
+            bool isWork = true;
             CarServiceStation carServiceStation = new CarServiceStation();
 
-            while(IsWork == true)
+            while(isWork == true)
             {
                 Console.WriteLine("1) принять новую машину. 2) купить деталь. 3) просмотр склада. 4) выход.");
                 choice = Console.ReadLine();
@@ -32,7 +32,7 @@ namespace ConsoleAppForCSLight
                         carServiceStation.ShowWarehouse();
                         break;
                     case "4":
-                        IsWork = false;
+                        isWork = false;
                         break;
                     default:
                         Console.WriteLine("error");
@@ -44,6 +44,7 @@ namespace ConsoleAppForCSLight
     
     class CarServiceStation
     {
+        private Spare _spareForNames = new Spare();
         private List<Spare> _warehouse = new List<Spare>();
         private int _money = 1000;
 
@@ -51,7 +52,7 @@ namespace ConsoleAppForCSLight
         {
             Console.WriteLine("выбрать можно из:");
 
-            foreach(String name in Spare.GetNames())
+            foreach(String name in _spareForNames.GetNames())
             {
                 Console.Write(name + ", ");
             }
@@ -61,7 +62,7 @@ namespace ConsoleAppForCSLight
             
             if(int.TryParse(choiceSpare, out int result))
             {
-                if(result > 0 && result <= Spare.GetNames().Length)
+                if(result > 0 && result <= _spareForNames.GetNames().Length)
                 {
                     Spare spare = new Spare(result - 1);
                     if(_money >= spare.Price)
@@ -127,20 +128,13 @@ namespace ConsoleAppForCSLight
 
     class Spare
     {
-        static Random random = new Random();
-        private static List<string> _names = new List<string>() { "фара", "Зеркало", "Масло", "Ремень", "Подшипник", "Сальник", "Фильтр" };
-        private static List<int> _prices = new List<int>() { 70, 80, 20, 10, 15, 10, 15 };
-        private static List<int> _pricesReplacement = new List<int>() { 20, 20, 15, 30, 30, 25, 25 };
+        private static Random _random = new Random();
+        private List<string> _names = new List<string>() { "фара", "Зеркало", "Масло", "Ремень", "Подшипник", "Сальник", "Фильтр" };
+        private List<int> _prices = new List<int>() { 70, 80, 20, 10, 15, 10, 15 };
+        private List<int> _pricesReplacement = new List<int>() { 20, 20, 15, 30, 30, 25, 25 };
         public string Name { get; private set; }
         public int Price { get; private set; }
         public int PriceReplacement { get; private set; }
-
-        public static string[] GetNames()
-        {
-            string[] arrayNames = new string[_names.Count];
-            _names.CopyTo(arrayNames);
-            return arrayNames;
-        }
 
         public Spare(int spareVariant)
         {
@@ -150,10 +144,17 @@ namespace ConsoleAppForCSLight
         }
         public Spare()
         {
-            int spareVariant = random.Next(0, _names.Count);
+            int spareVariant = _random.Next(0, _names.Count);
             Name = _names[spareVariant];
             Price = _prices[spareVariant];
             PriceReplacement = _pricesReplacement[spareVariant];
+        }
+
+        public string[] GetNames()
+        {
+            string[] arrayNames = new string[_names.Count];
+            _names.CopyTo(arrayNames);
+            return arrayNames;
         }
 
         public override bool Equals(object obj)
@@ -171,11 +172,12 @@ namespace ConsoleAppForCSLight
 
     class CarCustomer
     {
-        public Spare Spare = new Spare();
-        public string NeedSpareName;
+        public Spare Spare { get; private set; }
+        public string NeedSpareName { get; private set; }
 
         public CarCustomer()
         {
+            Spare = new Spare();
             NeedSpareName = Spare.Name;
         }
     }
