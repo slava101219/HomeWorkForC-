@@ -89,7 +89,7 @@ namespace ConsoleAppForCSLight
 
         public void ServiceNewCustomer()
         {
-            CarCustomer carCustomer = new CarCustomer();
+            CarCustomer carCustomer = new CarCustomer(_producer);
             Console.WriteLine("Новая тачка на ремонт! Требуется замена " + carCustomer.NeedSpareName + ". ");
             
             if(_warehouse.Contains(carCustomer.Spare)) 
@@ -131,7 +131,8 @@ namespace ConsoleAppForCSLight
     class Producer
     {
         private static Random _random = new Random();
-        private List<Spare> _spares = new List<Spare>() { new Spare(0), new Spare(1), new Spare(2), new Spare(3), new Spare(4), new Spare(5), new Spare(6) };
+        private List<Spare> _spares = new List<Spare>() { new Spare("фара", 70, 20), new Spare("Зеркало", 80, 20), new Spare("Масло", 20, 15),
+            new Spare("Ремень", 10, 30), new Spare("Подшипник", 15, 30), new Spare("Сальник", 10, 25), new Spare("Фильтр", 15, 25) };
 
         public Spare GetSpare(int varianteSpare)
         {
@@ -153,28 +154,17 @@ namespace ConsoleAppForCSLight
 
     class Spare
     {
-        private List<string> _names = new List<string>() { "фара", "Зеркало", "Масло", "Ремень", "Подшипник", "Сальник", "Фильтр" };
-        private List<int> _prices = new List<int>() { 70, 80, 20, 10, 15, 10, 15 };
-        private List<int> _pricesReplacement = new List<int>() { 20, 20, 15, 30, 30, 25, 25 };
-        private Producer _producer = new Producer();
         private static Random _random = new Random();
         
         public string Name { get; private set; }
         public int Price { get; private set; }
         public int PriceReplacement { get; private set; }
 
-        public Spare(int spareVariant)
+        public Spare(string name, int price, int priceReplacement)
         {
-            Name = _names[spareVariant];
-            Price = _prices[spareVariant];
-            PriceReplacement = _pricesReplacement[spareVariant];
-        }
-        public Spare()
-        {
-            int spareVariant = _random.Next(0, _names.Count);
-            Name = _names[spareVariant];
-            Price = _prices[spareVariant];
-            PriceReplacement = _pricesReplacement[spareVariant];
+            Name = name;
+            Price = price;
+            PriceReplacement = priceReplacement;
         }
 
         public override string ToString()
@@ -197,13 +187,12 @@ namespace ConsoleAppForCSLight
 
     class CarCustomer
     {
-        private Producer _producer = new Producer();
         public Spare Spare { get; private set; }
         public string NeedSpareName { get; private set; }
 
-        public CarCustomer()
+        public CarCustomer(Producer producer)
         {
-            Spare = _producer.GetRandomSpare();
+            Spare = producer.GetRandomSpare();
             NeedSpareName = Spare.Name;
         }
     }
