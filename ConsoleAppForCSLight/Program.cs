@@ -11,27 +11,24 @@ namespace ConsoleAppForCSLight
     {
         static void Main(string[] args)
         {
-            DatabasePatients databasePatients = new DatabasePatients();
+            DatabasePlayers databasePlayers = new DatabasePlayers();
             bool isWork = true;
             string choice;
             
             while(isWork == true)
             {
-                Console.WriteLine("1) сортировка по возрасту. 2) по имени. 3) по болезни. 4) выход");
+                Console.WriteLine("1) топ по лвл 2) топ ро силе 3) выход");
                 choice = Console.ReadLine();
 
                 switch (choice)
                 {
                     case "1":
-                        databasePatients.SortedByAge();
+                        databasePlayers.ShowTop3ByLvl();
                         break;
                     case "2":
-                        databasePatients.SortedByName();
+                        databasePlayers.ShowTop3ByPower();
                         break;
                     case "3":
-                        databasePatients.SortedByDisease();
-                        break;
-                    case "4":
                         isWork = false;
                         break;
                 }
@@ -39,98 +36,74 @@ namespace ConsoleAppForCSLight
         }
     }
 
-    class Patient
+    class Player
     {
         public string Name { get; private set; }
-        public int Age { get; private set; }
-        public Diseases Disease { get; private set; }
+        public int Power { get; private set; }
+        public int Lvl { get; private set; }
 
-        public Patient(string name, int age, Diseases disease)
+        public Player(string name, int power, int lvl)
         {
             Name = name;
-            Age = age;
-            Disease = disease;
+            Lvl = lvl;
+            Power = power;
         }
 
         public override string ToString()
         {
-            string patient = Name + " / " + Age + " лет. / " + Disease;
-            return patient;
+            string player = Name + " / " + Lvl + " лвл. / " + Power + " - силы";
+            return player;
         }
     }
 
-    enum Diseases
+    class DatabasePlayers
     {
-        Отит,
-        Диарея,
-        Ковид,
-        Травма,
-        Простуда
-    }
+        private List<Player> _players = new List<Player>() {
+        new Player("Майкл", 1000, 23),
+        new Player("Байрам", 1500, 24),
+        new Player("Джек", 25000, 49),
+        new Player("Усама", 8000, 32),
+        new Player("Пабло", 240000, 83),
+        new Player("Джозеф", 510, 12),
+        new Player("Роберт", 46000, 62),
+        new Player("Алексис", 18000, 53),
+        new Player("Дима", 320, 2),
+        new Player("Василий", 4500, 43)};
 
-    class DatabasePatients
-    {
-        private List<Patient> _patients = new List<Patient>() {
-        new Patient("Майкл", 10, Diseases.Диарея),
-        new Patient("Байрам", 15, Diseases.Ковид),
-        new Patient("Джек", 25, Diseases.Отит),
-        new Patient("Усама", 8, Diseases.Простуда),
-        new Patient("Пабло", 24, Diseases.Травма),
-        new Patient("Джозеф", 51, Diseases.Диарея),
-        new Patient("Роберт", 46, Diseases.Ковид),
-        new Patient("Алексис", 18, Diseases.Отит),
-        new Patient("Дима", 32, Diseases.Простуда),
-        new Patient("Василий", 45, Diseases.Травма)};
-
-    public void ShowAllPatients()
+    public void ShowAllPlayers()
         {
             Console.Clear();
             Console.WriteLine("----------------------");
 
-            foreach (Patient patient in _patients)
+            foreach (Player player in _players)
             {
-                Console.WriteLine(patient.ToString());
+                Console.WriteLine(player.ToString());
             }
 
             Console.WriteLine("----------------------");
         }
 
-        public void SortedByAge()
+        public void ShowTop3ByLvl()
         {
-            ShowAllPatients();
-            Console.WriteLine("Сортируем по возрасту:");
-            var sortedPatients = _patients.OrderBy(patient => patient.Age);
+            ShowAllPlayers();
+            Console.WriteLine("Топ по лвл.");
+            var sortedPlayers = _players.OrderBy(player => player.Lvl).Reverse().ToList();
 
-            foreach(Patient patient in sortedPatients)
+            for (int i = 0; i < 3; i++)
             {
-                Console.WriteLine(patient.ToString());
+                Console.WriteLine(sortedPlayers[i].ToString());
             }
         }
 
-        public void SortedByName()
+        public void ShowTop3ByPower()
         {
-            ShowAllPatients();
-            Console.WriteLine("Сортируем по имени:");
-            var sortedPatients = _patients.OrderBy(patient => patient.Name);
+            ShowAllPlayers();
+            Console.WriteLine("Топ по силе.");
+            var sortedPlayers = _players.OrderBy(player => player.Power).Reverse().ToList();
 
-            foreach (Patient patient in sortedPatients)
+            for (int i = 0; i < 3; i++)
             {
-                Console.WriteLine(patient.ToString());
-            }
-        }
-
-        public void SortedByDisease()
-        {
-            ShowAllPatients();
-            Console.WriteLine("Введите название болезни..");
-
-            string soughtForDisease = Console.ReadLine();
-            Console.WriteLine("Сортируем по болезни:");
-            var sortedPatients = _patients.Where(patient => patient.Disease.ToString().ToUpper() == soughtForDisease.ToUpper());
-
-            foreach (Patient patient in sortedPatients)
-            {
-                Console.WriteLine(patient.ToString());
+                Console.WriteLine(sortedPlayers[i].ToString());
             }
         }
     }
