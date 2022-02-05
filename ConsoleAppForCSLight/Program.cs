@@ -87,23 +87,23 @@ namespace ConsoleAppForCSLight
         {
             ShowAllPlayers();
             Console.WriteLine("Топ по лвл.");
-            var sortedPlayers = _players.OrderBy(player => player.Lvl).Reverse().ToList();
-
-            for (int i = 0; i < 3; i++)
-            {
-                Console.WriteLine(sortedPlayers[i].ToString());
-            }
+            var sortedPlayers = _players.OrderBy(player => player.Lvl).Reverse().Take(3).ToList();
+            ShowList(sortedPlayers);
         }
 
         public void ShowTop3ByPower()
         {
             ShowAllPlayers();
             Console.WriteLine("Топ по силе.");
-            var sortedPlayers = _players.OrderBy(player => player.Power).Reverse().ToList();
+            var sortedPlayers = _players.OrderBy(player => player.Power).Reverse().Take(3).ToList();
+            ShowList(sortedPlayers);
+        }
 
-            for (int i = 0; i < 3; i++)
+        public void ShowList(List<Player> players)
+        {
+            foreach(Player player in players)
             {
-                Console.WriteLine(sortedPlayers[i].ToString());
+                Console.WriteLine(player.ToString());
             }
         }
     }
