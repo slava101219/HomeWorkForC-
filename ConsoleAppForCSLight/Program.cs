@@ -11,24 +11,21 @@ namespace ConsoleAppForCSLight
     {
         static void Main(string[] args)
         {
-            DatabasePlayers databasePlayers = new DatabasePlayers();
+            DatabaseStews databaseStews = new DatabaseStews();
             bool isWork = true;
             string choice;
             
             while(isWork == true)
             {
-                Console.WriteLine("1) топ по лвл 2) топ ро силе 3) выход");
+                Console.WriteLine("1) показать годные 2) выход");
                 choice = Console.ReadLine();
 
                 switch (choice)
                 {
                     case "1":
-                        databasePlayers.ShowTop3ByLvl();
+                        databaseStews.ShowGoodProducts();
                         break;
                     case "2":
-                        databasePlayers.ShowTop3ByPower();
-                        break;
-                    case "3":
                         isWork = false;
                         break;
                 }
@@ -36,74 +33,67 @@ namespace ConsoleAppForCSLight
         }
     }
 
-    class Player
+    class Stew
     {
         public string Name { get; private set; }
-        public int Power { get; private set; }
-        public int Lvl { get; private set; }
+        public DateTime Date { get; private set; }
+        public int expirationDate { get; private set; } = 30;
 
-        public Player(string name, int power, int lvl)
+        public Stew(string name, DateTime date)
         {
             Name = name;
-            Lvl = lvl;
-            Power = power;
+            Date = date;
         }
 
         public override string ToString()
         {
-            string player = Name + " / " + Lvl + " лвл. / " + Power + " - силы";
-            return player;
+            string stew = Name + " / " + Date.ToShortDateString();
+            return stew;
         }
     }
 
-    class DatabasePlayers
+    class DatabaseStews
     {
-        private List<Player> _players = new List<Player>() {
-        new Player("Майкл", 1000, 23),
-        new Player("Байрам", 1500, 24),
-        new Player("Джек", 25000, 49),
-        new Player("Усама", 8000, 32),
-        new Player("Пабло", 240000, 83),
-        new Player("Джозеф", 510, 12),
-        new Player("Роберт", 46000, 62),
-        new Player("Алексис", 18000, 53),
-        new Player("Дима", 320, 2),
-        new Player("Василий", 4500, 43)};
+        private List<Stew> _stews = new List<Stew>() {
+        new Stew("Боярская", new DateTime(2021, 12, 12)),
+        new Stew("Радость туриста", new DateTime(2022, 02, 05)),
+        new Stew("Тушка", new DateTime(2022, 01, 21)),
+        new Stew("Брюшко", new DateTime(2021, 09, 02)),
+        new Stew("Коровья", new DateTime(2022, 01, 19)),
+        new Stew("Телячья", new DateTime(2021, 12, 22)),
+        new Stew("Бычья", new DateTime(2022, 02, 02)),
+        new Stew("Лососья", new DateTime(2022, 01, 27)),
+        new Stew("Домашняя", new DateTime(2021, 04, 24)),
+        new Stew("Заграничная", new DateTime(2021, 11, 12))};
 
-    public void ShowAllPlayers()
+    public void ShowAllStews()
         {
             Console.Clear();
             Console.WriteLine("----------------------");
 
-            foreach (Player player in _players)
+            foreach (Stew stew in _stews)
             {
-                Console.WriteLine(player.ToString());
+                Console.WriteLine(stew.ToString());
             }
 
             Console.WriteLine("----------------------");
         }
 
-        public void ShowTop3ByLvl()
+        public void ShowGoodProducts()
         {
-            ShowAllPlayers();
-            Console.WriteLine("Топ по лвл.");
-            var sortedPlayers = _players.OrderBy(player => player.Lvl).Reverse().Take(3).ToList();
-            ShowList(sortedPlayers);
+            ShowAllStews();
+            Console.WriteLine("Годны :");
+            double expirationDate = -30;
+            DateTime lastExpirationDate = DateTime.Today.AddDays(expirationDate);
+            var sortedStews = _stews.Where(stew => DateTime.Compare(stew.Date, lastExpirationDate) >= 0).OrderBy(stew => stew.Date).Reverse().ToList();
+            ShowList(sortedStews);
         }
 
-        public void ShowTop3ByPower()
+        public void ShowList(List<Stew> stews)
         {
-            ShowAllPlayers();
-            Console.WriteLine("Топ по силе.");
-            var sortedPlayers = _players.OrderBy(player => player.Power).Reverse().Take(3).ToList();
-            ShowList(sortedPlayers);
-        }
-
-        public void ShowList(List<Player> players)
-        {
-            foreach(Player player in players)
+            foreach(Stew stew in stews)
             {
-                Console.WriteLine(player.ToString());
+                Console.WriteLine(stew.ToString());
             }
         }
     }
