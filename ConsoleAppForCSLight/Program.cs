@@ -37,7 +37,6 @@ namespace ConsoleAppForCSLight
     {
         public string Name { get; private set; }
         public DateTime Date { get; private set; }
-        public int expirationDate { get; private set; } = 30;
 
         public Stew(string name, DateTime date)
         {
@@ -83,8 +82,8 @@ namespace ConsoleAppForCSLight
         {
             ShowAllStews();
             Console.WriteLine("Годны :");
-            double expirationDate = -30;
-            DateTime lastExpirationDate = DateTime.Today.AddDays(expirationDate);
+            double expirationDate = 30;
+            DateTime lastExpirationDate = DateTime.Today.AddDays(-expirationDate);
             var sortedStews = _stews.Where(stew => DateTime.Compare(stew.Date, lastExpirationDate) >= 0).OrderBy(stew => stew.Date).Reverse().ToList();
             ShowList(sortedStews);
         }
