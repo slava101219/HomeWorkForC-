@@ -11,19 +11,19 @@ namespace ConsoleAppForCSLight
     {
         static void Main(string[] args)
         {
-            DatabaseStews databaseStews = new DatabaseStews();
+            DatabaseSoldiers databaseSoldiers = new DatabaseSoldiers();
             bool isWork = true;
             string choice;
             
             while(isWork == true)
             {
-                Console.WriteLine("1) показать годные 2) выход");
+                Console.WriteLine("1) показать состав 2) выход");
                 choice = Console.ReadLine();
 
                 switch (choice)
                 {
                     case "1":
-                        databaseStews.ShowGoodProducts();
+                        databaseSoldiers.ShowNameAndRankSoldiers();
                         break;
                     case "2":
                         isWork = false;
@@ -33,66 +33,81 @@ namespace ConsoleAppForCSLight
         }
     }
 
-    class Stew
+    enum Armament
+    {
+        Автомат,
+        Пистолет,
+        Пулемет,
+        Граната
+    }
+
+    enum Rank
+    {
+        сержант,
+        лейтенант,
+        капитан,
+        майор
+    }
+
+    class Soldier
     {
         public string Name { get; private set; }
-        public DateTime Date { get; private set; }
+        public Rank Rank { get; private set; }
+        public Armament Armament { get; private set; }
+        public int TermEmploy { get; private set; }
 
-        public Stew(string name, DateTime date)
+
+        public Soldier(string name, Rank rank, Armament armament, int termEmploy)
         {
             Name = name;
-            Date = date;
+            Rank = rank;
+            Armament = armament;
+            TermEmploy = termEmploy;
         }
 
         public override string ToString()
         {
-            string stew = Name + " / " + Date.ToShortDateString();
-            return stew;
+            string soldier = Name + " / " + Rank + " / " + Armament + " / служить еще " + TermEmploy + " месяцев" ;
+            return soldier;
         }
     }
 
-    class DatabaseStews
+    class DatabaseSoldiers
     {
-        private List<Stew> _stews = new List<Stew>() {
-        new Stew("Боярская", new DateTime(2021, 12, 12)),
-        new Stew("Радость туриста", new DateTime(2022, 02, 05)),
-        new Stew("Тушка", new DateTime(2022, 01, 21)),
-        new Stew("Брюшко", new DateTime(2021, 09, 02)),
-        new Stew("Коровья", new DateTime(2022, 01, 19)),
-        new Stew("Телячья", new DateTime(2021, 12, 22)),
-        new Stew("Бычья", new DateTime(2022, 02, 02)),
-        new Stew("Лососья", new DateTime(2022, 01, 27)),
-        new Stew("Домашняя", new DateTime(2021, 04, 24)),
-        new Stew("Заграничная", new DateTime(2021, 11, 12))};
+        private List<Soldier> _soldiers = new List<Soldier>() {
+        new Soldier("Боря", Rank.капитан, Armament.Автомат, 12),
+        new Soldier("Деня", Rank.лейтенант, Armament.Граната, 23),
+        new Soldier("Макс", Rank.майор, Armament.Пистолет, 6),
+        new Soldier("Димас", Rank.сержант, Armament.Пулемет, 5),
+        new Soldier("Колян", Rank.лейтенант, Armament.Граната, 21),
+        new Soldier("Рембо", Rank.лейтенант, Armament.Пистолет, 17),
+        new Soldier("Сталоне", Rank.капитан, Armament.Пулемет, 34),
+        new Soldier("Марк", Rank.сержант, Armament.Автомат, 3),
+        new Soldier("Витька", Rank.сержант, Armament.Граната, 8),
+        new Soldier("Вовка", Rank.сержант, Armament.Пистолет, 15)};
 
-    public void ShowAllStews()
+    public void ShowAllSoldiers()
         {
             Console.Clear();
             Console.WriteLine("----------------------");
 
-            foreach (Stew stew in _stews)
+            foreach (Soldier soldier in _soldiers)
             {
-                Console.WriteLine(stew.ToString());
+                Console.WriteLine(soldier.ToString());
             }
 
             Console.WriteLine("----------------------");
         }
 
-        public void ShowGoodProducts()
+        public void ShowNameAndRankSoldiers()
         {
-            ShowAllStews();
-            Console.WriteLine("Годны :");
-            double expirationDate = 30;
-            DateTime lastExpirationDate = DateTime.Today.AddDays(-expirationDate);
-            var sortedStews = _stews.Where(stew => DateTime.Compare(stew.Date, lastExpirationDate) >= 0).OrderBy(stew => stew.Date).Reverse().ToList();
-            ShowList(sortedStews);
-        }
+            ShowAllSoldiers();
+            Console.WriteLine("Имена и звания личного состава:");
+            var sortedSoldier = _soldiers.Select(soldier => new {name = soldier.Name, rank = soldier.Rank }).ToList();
 
-        public void ShowList(List<Stew> stews)
-        {
-            foreach(Stew stew in stews)
+            foreach(var soldier in sortedSoldier)
             {
-                Console.WriteLine(stew.ToString());
+                Console.WriteLine(soldier.name + " / " + soldier.rank);
             }
         }
     }
