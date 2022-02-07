@@ -12,24 +12,8 @@ namespace ConsoleAppForCSLight
         static void Main(string[] args)
         {
             DatabaseSoldiers databaseSoldiers = new DatabaseSoldiers();
-            bool isWork = true;
-            string choice;
-            
-            while(isWork == true)
-            {
-                Console.WriteLine("1) показать состав 2) выход");
-                choice = Console.ReadLine();
-
-                switch (choice)
-                {
-                    case "1":
-                        databaseSoldiers.ShowNameAndRankSoldiers();
-                        break;
-                    case "2":
-                        isWork = false;
-                        break;
-                }
-            }
+            databaseSoldiers.ShowNameAndRankSoldiers();
+            Console.ReadKey();
         }
     }
 
@@ -74,6 +58,7 @@ namespace ConsoleAppForCSLight
 
     class DatabaseSoldiers
     {
+        private List<Soldier> _soldiersWithB = new List<Soldier>();
         private List<Soldier> _soldiers = new List<Soldier>() {
         new Soldier("Боря", Rank.капитан, Armament.Автомат, 12),
         new Soldier("Деня", Rank.лейтенант, Armament.Граната, 23),
@@ -82,7 +67,7 @@ namespace ConsoleAppForCSLight
         new Soldier("Колян", Rank.лейтенант, Armament.Граната, 21),
         new Soldier("Рембо", Rank.лейтенант, Armament.Пистолет, 17),
         new Soldier("Сталоне", Rank.капитан, Armament.Пулемет, 34),
-        new Soldier("Марк", Rank.сержант, Armament.Автомат, 3),
+        new Soldier("барк", Rank.сержант, Armament.Автомат, 3),
         new Soldier("Витька", Rank.сержант, Armament.Граната, 8),
         new Soldier("Вовка", Rank.сержант, Armament.Пистолет, 15)};
 
@@ -103,11 +88,11 @@ namespace ConsoleAppForCSLight
         {
             ShowAllSoldiers();
             Console.WriteLine("Имена и звания личного состава:");
-            var sortedSoldier = _soldiers.Select(soldier => new {name = soldier.Name, rank = soldier.Rank }).ToList();
-
-            foreach(var soldier in sortedSoldier)
+            var sortedSoldier = _soldiers.Where(soldier => soldier.Name.ToUpper().StartsWith("Б")).ToList();
+            _soldiersWithB = sortedSoldier;
+            foreach(Soldier soldier in _soldiersWithB)
             {
-                Console.WriteLine(soldier.name + " / " + soldier.rank);
+                Console.WriteLine(soldier.Name + " / " + soldier.Rank);
             }
         }
     }
