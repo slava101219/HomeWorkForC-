@@ -88,7 +88,7 @@ namespace ConsoleAppForCSLight
             ShowAllSoldiers();
             var sortedSoldierWithB = _soldiers.Where(soldier => soldier.Name.ToUpper().StartsWith("Б")).ToList();
             _soldiersWithB = sortedSoldierWithB;
-            _soldiers = _soldiers.Except(_soldiersWithB);
+            _soldiers = _soldiers.Except(_soldiersWithB).ToList();
             ShowAllSoldiers();
 
             foreach (Soldier soldier in _soldiersWithB)
