@@ -12,7 +12,7 @@ namespace ConsoleAppForCSLight
         static void Main(string[] args)
         {
             DatabaseSoldiers databaseSoldiers = new DatabaseSoldiers();
-            databaseSoldiers.ShowNameAndRankSoldiers();
+            databaseSoldiers.TransferSoldiers();
             Console.ReadKey();
         }
     }
@@ -73,7 +73,6 @@ namespace ConsoleAppForCSLight
 
     public void ShowAllSoldiers()
         {
-            Console.Clear();
             Console.WriteLine("----------------------");
 
             foreach (Soldier soldier in _soldiers)
@@ -84,15 +83,18 @@ namespace ConsoleAppForCSLight
             Console.WriteLine("----------------------");
         }
 
-        public void ShowNameAndRankSoldiers()
+        public void TransferSoldiers()
         {
             ShowAllSoldiers();
-            Console.WriteLine("Имена и звания личного состава:");
-            var sortedSoldier = _soldiers.Where(soldier => soldier.Name.ToUpper().StartsWith("Б")).ToList();
-            _soldiersWithB = sortedSoldier;
-            foreach(Soldier soldier in _soldiersWithB)
+            var sortedSoldierWithB = _soldiers.Where(soldier => soldier.Name.ToUpper().StartsWith("Б")).ToList();
+            _soldiersWithB = sortedSoldierWithB;
+            var sortedSoldier = _soldiers.Except(_soldiersWithB).ToList();
+            _soldiers = sortedSoldier;
+            ShowAllSoldiers();
+
+            foreach (Soldier soldier in _soldiersWithB)
             {
-                Console.WriteLine(soldier.Name + " / " + soldier.Rank);
+                Console.WriteLine(soldier.ToString());
             }
         }
     }
